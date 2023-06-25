@@ -2,35 +2,59 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\user;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
-    /**
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+ 
+    public function List()
     {
         return user::all();
     }
 
+    public function ListOne(user $user, $id){
+        return user::findOrFail($id);
+    }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
 
+    public function Register(Request $request){
+        
+        $validation = self::RegisterValidation($request);
+
+        if ($validation->fails())
+        return $validation->errors();
+    
+        return $this -> Registercreate($request);
+    }
+    public function RegisterValidation(Request $request){
+        $validation = Validator::make($request->all(),[
+            'name' => 'required | alpha:ascii ',
+            'surname' => 'required | alpha:ascii',
+            'age' => 'required | integer',
+            'gender' => 'nullable | alpha',
+            'mail' => 'email | required | unique:users',
+            'passwd' =>'required | min:8 | confirmed',
+            'profile_pic' => 'nullable',
+            'description' => 'nullable | max:255',
+            'homeland' => ' nullable | exists:country,id_country',
+            'residence' => 'nullable | exists:country,id_country'
+        ]);
+        return $validation;    
+    }
+    public function RegisterCreate (Request $request){
         $User = new user();
         
-        $User -> name = $request ->post("nombre"); 
+        $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
         $User -> gender = $request ->post("gender");
         $User -> mail = $request ->post("mail");
-        $User -> passwd = $request ->post("passwd");
+        $User -> passwd = Hash::make($request -> post("passwd"));
+        $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
@@ -40,22 +64,7 @@ class UserController extends Controller
     }
 
 
-
-    /**
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(user $user, $id)
-    {
-        return user::findOrFail($id);
-    }
-
-    /**
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(user $user, $id)
-    {
+    public function edit(user $user, $id){
         $User = user::findOrFail($id);
         $User -> name = $request ->post("nombre"); 
         $User -> surname = $request ->post("surname");
@@ -72,23 +81,7 @@ class UserController extends Controller
         return $User;
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, user $user)
-    {
-        //
-    }
-
-    /**
-     * 
-     *
-     * @param  \App\Models\user  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(user $user, $id)
+    public function delete(user $user, $id)
     {
         $User = user::findOrFail($id);
         $User->delete(); 

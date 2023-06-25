@@ -3,16 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\InterestController;
+use App\Http\Controllers\LikesController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -20,17 +13,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function(){
-    Route::get("/user",[UserController::class,"Index"]);
-    Route::get("/user/{d}/",[UserController::class,"show"]);
-    
-    Route::post("/user", [UserController::class,"Store"]);
+    Route::get("/user",[UserController::class,"List"]);
+    Route::get("/user/{d}/",[UserController::class,"ListOne"]);
+    Route::post("/user", [UserController::class,"Register"]);
+
+    Route::get("/country", [CountryController::class,"List"]);
+    Route::get("/country/{d}/",[CountryController::class,"ListOne"]);
+    Route::post("/country", [CountryController::class,"Create"]);
+
+    Route::get("/interest", [InterestController::class, "List"]);
+
+    Route::get("/likes",[LikesController::class,"List"]);
+    Route::get("/likes/{d}/",[LikesController::class,"ListOne"]);
+    Route::get("/likes/user/{d}/",[LikesController::class,"ListUserInterest"]);
+    Route::post("/likes", [LikesController::class,"Create"]);
 });
-/*
-Route::prefix('v1')->group(function () {
-    Route::get("/animal",[AnimalController::class,"Listar"]);
-    Route::get("/animal/{d}/",[AnimalController::class,"ListarUno"]);
-    Route::post("/animal",[AnimalController::class,"Insertar"]);
-    Route::delete("/animal/{d}",[AnimalController::class,"Eliminar"]);
-    Route::put("/animal/{d}",[AnimalController::class,"Modificar"]);
-});
-*/
