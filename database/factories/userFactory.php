@@ -14,16 +14,18 @@ final class userFactory extends Factory
 
     public function definition(): array
     {
-        $gender = $faker->randomElement(['male', 'female']);
+     
         return [
-            'name' => $this->faker->firstName($gender),
-            'surname' => $this->faker->lasName(),
+            'name' => $this->faker->firstName,
+            'surname' => $this->faker->lastName,
             'age' => $this->faker->numberBetween(0, 100),
-            'gender' => $this->faker->optional()->$gender,
-            'mail' => $this->faker->email(),
-            'passwd' => $this->faker->password(8),
-            'profile_pic' => $this->faker->optional()->url(),
-            'description' => $this->faker->optional()->paragraph(),
+            'gender' => $this->faker->randomElement(['Male', 'Female']),
+            'mail' => $this->faker->unique()->safeEmail,
+            'passwd' => bcrypt('password'),
+            'profile_pic' => $this->faker->imageUrl(200, 200),
+            'description' => $this->faker->sentence,
+            'homeland' => \App\Models\country::factory(),
+            'residence' => \App\Models\country::factory(),
         ];
     }
 }

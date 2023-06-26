@@ -27,5 +27,5 @@ class InterestController extends Controller
         $Interest -> save();
         return $Interest;
     }
-    
+
 }
