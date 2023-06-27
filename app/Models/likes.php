@@ -7,20 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-class user extends Model
+class likes extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    protected $table = "users";
-
+    protected $table = "likes";
     
-    public function homeland(): BelongsTo
+    public function id_user(): BelongsTo
     {
-        return $this->belongsTo(Country::class, 'homeland');
+        return $this->belongsTo(user::class, 'id_user');
     }
 
-    public function residence(): BelongsTo
+    public function id_interest(): BelongsTo
     {
-        return $this->belongsTo(Country::class, 'residence');
+        return $this->belongsTo(interest::class, 'id_interst');
     }
 }
