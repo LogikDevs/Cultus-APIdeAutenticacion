@@ -8,15 +8,7 @@ use App\Models\interest;
 use App\Models\likes;
 class likesSeed extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *    \App\Models\user::factory()
-            ->has(Country::factory(), 'homeland')
-            ->has(Country::factory(), 'residence')
-            ->count(10)
-            ->create();
-     * @return void
-     */
+    
     public function run()
     {
         \App\Models\likes::factory()

@@ -40,8 +40,8 @@ class UserController extends Controller
             'passwd' =>'required | min:8 | confirmed',
             'profile_pic' => 'nullable',
             'description' => 'nullable | max:255',
-            'homeland' => ' nullable | exists:country,id_country',
-            'residence' => 'nullable | exists:country,id_country'
+            'homeland' => ' nullable | integer | exists:country,id_country',
+            'residence' => 'nullable | integer | exists:country,id_country'
         ]);
         return $validation;    
     }

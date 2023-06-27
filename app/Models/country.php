@@ -10,4 +10,5 @@ class country extends Model
     use HasFactory;
     use SoftDeletes;
     protected $table = "country";
+    protected $primaryKey = 'id_country';
 }
