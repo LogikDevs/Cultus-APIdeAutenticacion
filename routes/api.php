@@ -13,6 +13,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function(){
+    Route::get('/validate',[UserController::class,"ValidateToken"])->middleware('auth:api');
+
     Route::get("/user",[UserController::class,"List"]);
     Route::get("/user/{d}/",[UserController::class,"ListOne"]);
     Route::post("/user", [UserController::class,"Register"]);
