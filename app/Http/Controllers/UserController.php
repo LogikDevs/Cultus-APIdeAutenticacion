@@ -36,8 +36,8 @@ class UserController extends Controller
             'surname' => 'required | alpha:ascii',
             'age' => 'required | integer',
             'gender' => 'nullable | alpha',
-            'mail' => 'email | required | unique:users',
-            'passwd' =>'required | min:8 | confirmed',
+            'email' => 'email | required | unique:users',
+            'password' =>'required | min:8 | confirmed',
             'profile_pic' => 'nullable',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
@@ -52,15 +52,18 @@ class UserController extends Controller
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
         $User -> gender = $request ->post("gender");
-        $User -> mail = $request ->post("mail");
-        $User -> passwd = Hash::make($request -> post("passwd"));
+        $User -> email = $request ->post("email");
+        $User -> password = Hash::make($request -> post("password"));
         $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
-        
         $User -> save();       
         return $User;
+    }
+
+    public function ValidateToken(Request $request){
+        return auth('api')->user();
     }
 
 
@@ -70,8 +73,8 @@ class UserController extends Controller
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
         $User -> gender = $request ->post("gender");
-        $User -> mail = $request ->post("mail");
-        $User -> passwd = $request ->post("passwd");
+        $User -> email = $request ->post("email");
+        $User -> password = $request ->post("password");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
