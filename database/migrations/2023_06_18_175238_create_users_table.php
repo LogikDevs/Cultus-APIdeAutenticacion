@@ -6,7 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
-    
+    /**
+     * Run the migrations.
+     *chema::create('animales', function (Blueprint $table) {
+            $table->id();
+            $table->string("nombre");
+            $table->integer("cantidad_de_patas");
+            $table->string("especie");
+            $table->boolean("cola");
+            $table->timestamps();
+            $table->softDeletes();
+     * @return void
+     */
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
@@ -15,16 +26,13 @@ class CreateUsersTable extends Migration
             $table->string("surname");
             $table->integer("age");
             $table->string("gender")->nullable();
-            $table->string("mail")->unique();
+            $table->string("mail");
             $table->string("passwd");
             $table->string("profile_pic")->nullable();
             $table->string("description")->nullable();
+            $table->string("homeland");
+            $table->string("residence");
 
-            $table->unsignedBigInteger("homeland")->nullable();
-            $table->unsignedBigInteger("residence")->nullable();
-            $table->foreign("homeland")->references("id_country")->on("country");
-            $table->foreign("residence")->references("id_country")->on("country");
-           
             $table->timestamps();
             $table->softDeletes();
         });
