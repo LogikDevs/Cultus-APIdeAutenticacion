@@ -8,7 +8,7 @@ services:
     command: --init-file /data/application/init.sql
     environment:
       - MYSQL_ROOT_PASSWORD=root 
-      - MYSQL_DATABASE=laravel
+      - MYSQL_DATABASE=cultus
     volumes:
       - "./init.sql:/data/application/init.sql"
       - "./mysql:/var/lib/mysql"
