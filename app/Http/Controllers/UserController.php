@@ -84,6 +84,11 @@ class UserController extends Controller
         return $User;
     }
 
+    public function logout(Request $request){
+        $request->user()->token()->revoke();
+        return ['message' => 'Logout succesful, token revoked'];   
+    }
+
     public function delete(user $user, $id)
     {
         $User = user::findOrFail($id);
