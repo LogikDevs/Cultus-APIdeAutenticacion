@@ -33,5 +33,9 @@ jobs:
         run: |
           php artisan migrate:fresh
           php artisan db:seed
+      - name: passport
+        run: |
+          php artisan passport:install
+          php artisan key:generate
       - name: Ejecutar pruebas
         run: php artisan test
