@@ -67,7 +67,7 @@ class UserController extends Controller
     }
 
 
-    public function edit(user $user, $id){
+    public function edit(Request $request, $id){
         $User = user::findOrFail($id);
         $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
@@ -75,6 +75,7 @@ class UserController extends Controller
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $User -> password = $request ->post("password");
+        $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
