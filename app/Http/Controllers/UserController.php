@@ -68,7 +68,8 @@ class UserController extends Controller
 
 
     public function edit(Request $request, $id){
-        $User = user::findOrFail($id);
+        $User = new user();
+        $User = user::findOrFail($id);   
         $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
