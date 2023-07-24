@@ -61,4 +61,19 @@ class LikesTest extends TestCase
             "id_user"=>["The selected id user is invalid."]
         ]);
     }
+
+    public function test_DeleteGoodRequest(){
+        $response = $this->delete('api/v1/likes/delete/1' );
+        $response -> assertStatus(200);
+        $response -> assertJsonFragment(["response"=> "Object with ID 1 Deleted"]);
+        $this->assertDatabaseMissing("likes",[
+            "id"=>"1",
+            "deleted_at"=> null
+        ]);
+    }
+
+    public function test_DeleteBadRequest(){
+        $response = $this->delete('api/v1/likes/delete/10000');
+        $response -> assertStatus(404);
+    }
 }
