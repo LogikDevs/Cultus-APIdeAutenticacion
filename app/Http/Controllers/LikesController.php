@@ -51,4 +51,13 @@ class LikesController extends Controller
         return $Likes;
     }
 
+    public function delete(likes $likes, $id)
+    {
+        $Likes = likes::findOrFail($id);
+        $Likes->delete(); 
+
+        return ["response" => "Object with ID $id Deleted"];
+        
+    }
+
 }

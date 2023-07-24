@@ -12,3 +12,4 @@ class country extends Model
     protected $table = "country";
     protected $primaryKey = 'id_country';
 }
+  
