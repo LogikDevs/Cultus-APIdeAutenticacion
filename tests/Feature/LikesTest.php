@@ -63,7 +63,7 @@ class LikesTest extends TestCase
     }
 
     public function test_DeleteGoodRequest(){
-        $response = $this->delete('api/v1/likes/delete/1' );
+        $response = $this->delete('api/v1/likes/1' );
         $response -> assertStatus(200);
         $response -> assertJsonFragment(["response"=> "Object with ID 1 Deleted"]);
         $this->assertDatabaseMissing("likes",[
@@ -73,7 +73,7 @@ class LikesTest extends TestCase
     }
 
     public function test_DeleteBadRequest(){
-        $response = $this->delete('api/v1/likes/delete/10000');
+        $response = $this->delete('api/v1/likes/10000');
         $response -> assertStatus(404);
     }
 }
