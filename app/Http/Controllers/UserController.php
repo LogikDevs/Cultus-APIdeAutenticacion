@@ -75,14 +75,13 @@ class UserController extends Controller
         $User -> age = $request ->post("age");
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
-        $User -> password = $request ->post("password");
+        $User -> password = Hash::make($request -> post("password"));
         $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
         
         $User -> save();  
-
         return $User;
     }
 
