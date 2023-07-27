@@ -34,4 +34,6 @@ Route::prefix('v1')->group(function(){
     Route::get("/likes/interest/{d}/",[LikesController::class,"ListInterestUsers"]);
     Route::post("/likes", [LikesController::class,"Create"]);
     Route::delete("/likes/{d}", [LikesController::class,"delete"]);
+
+    Route::get("/follow",[LikesController::class,"Create"]);
 });
