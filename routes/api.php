@@ -35,5 +35,11 @@ Route::prefix('v1')->group(function(){
     Route::post("/likes", [LikesController::class,"Create"]);
     Route::delete("/likes/{d}", [LikesController::class,"delete"]);
 
-    Route::get("/follow",[LikesController::class,"Create"]);
+    Route::get("/followers/{d}",[FollowsController::class,"ListFollowers"]);
+    Route::get("/followeds/{d}",[FollowsController::class,"ListFolloweds"]);
+    Route::get("/friends/{d}",[FollowsController::class,"ListFriends"]);
+    Route::post("/follow",[FollowsController::class,"Follow"]);
+    Route::post("/unfollow",[FollowsController::class,"UnFollow"]);
+    Route::post("/friends",[FollowsController::class,"MakeFriends"]);
+    Route::post("/friends/unfriend",[FollowsController::class,"UnFriend"]);
 });
