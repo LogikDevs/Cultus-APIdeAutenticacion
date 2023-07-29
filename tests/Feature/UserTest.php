@@ -39,20 +39,6 @@ class UserTest extends TestCase
             "id"=> 1,
             "deleted_at"=> null
         ]);
-        /*
-        "name"=> "Javonte",
-            "surname"=> "Davis",
-            "age"=> 55,
-            "gender"=> "Female",
-            "mail"=> "white.andres@example.com",
-            "password"=> "$2y$10$Uk2OSlc15LylMdKUNQan7uNki84\/SuJo4dJ9TH7PdBUxSrDya9XxK",
-            "profile_pic"=> "https:\/\/via.placeholder.com\/200x200.png\/003311?text=ullam",
-            "description"=> "Natus consectetur et necessitatibus ex sunt.",
-            "homeland"=> 101,
-            "residence"=> 102,
-            "created_at"=> "2023-06-26T14:48:54.000000Z",
-            "updated_at"=> "2023-06-26T14:48:54.000000Z",
-        */
     }
 
     public function test_ListOneThatDoesntExist(){

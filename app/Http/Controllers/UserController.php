@@ -66,6 +66,13 @@ class UserController extends Controller
         return auth('api')->user();
     }
 
+    public function checkPassword(int $id, string $password){
+        $user = user::find($id);
+         if (Hash::check($password, $user->password)) {
+            return false;
+         }
+         return true;
+    }
 
     public function edit(Request $request, $id){
         $User = new user();
@@ -75,14 +82,17 @@ class UserController extends Controller
         $User -> age = $request ->post("age");
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
-        $User -> password = Hash::make($request -> post("password"));
+        $password = Hash::make($request -> post("password"));
+        if (checkPassword())
+        $User -> password = $password;
         $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
-        $User -> residence = $request ->post("residence");
-        
+        $User -> residence = $request ->post("residence");     
         $User -> save();  
         return $User;
+
+        return "Password can´t be the same";
     }
 
     public function logout(Request $request){
