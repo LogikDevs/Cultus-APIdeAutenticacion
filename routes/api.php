@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\LikesController;
+use App\Http\Controllers\FollowsController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -40,6 +41,6 @@ Route::prefix('v1')->group(function(){
     Route::get("/friends/{d}",[FollowsController::class,"ListFriends"]);
     Route::post("/follow",[FollowsController::class,"Follow"]);
     Route::post("/unfollow",[FollowsController::class,"UnFollow"]);
-    Route::post("/friends",[FollowsController::class,"MakeFriends"]);
+    Route::post("/friends",[FollowsController::class,"MakeFriend"]);
     Route::post("/friends/unfriend",[FollowsController::class,"UnFriend"]);
 });

@@ -16,5 +16,21 @@ class followsSeeder extends Seeder
         ->has(user::factory(), 'id_followed')
         ->count(200)
         ->create(); 
+
+        \App\Models\follows::factory(1)
+        ->count(1)
+        ->create([
+            "id_follower" => 2,
+            "id_followed" => 1,
+            "friends" => true
+        ]);
+
+        \App\Models\follows::factory(1)
+        ->count(1)
+        ->create([
+            "id_follower" => 1,
+            "id_followed" => 2,
+            "friends" => true
+        ]);
     }
 }
