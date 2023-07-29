@@ -13,6 +13,7 @@ class follows extends Model
     use HasFactory;
     use SoftDeletes;
     protected $table = "follows";
+    protected $primaryKey = 'id_follows';
     
     public function id_followed(): BelongsTo
     {
