@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
  
@@ -29,6 +30,21 @@ class UserController extends Controller
         return $validation->errors();
     
         return $this -> Registercreate($request);
+    }
+    public function EditValidation(Request $request, $id){
+        $validation = Validator::make($request->all(),[
+            'name' => 'required | alpha:ascii ',
+            'surname' => 'required | alpha:ascii',
+            'age' => 'required | integer',
+            'gender' => 'nullable | alpha',
+            'email' => ['required', 'email',  Rule::unique('users')->ignore($id)],
+            'password' =>'required | min:8 | confirmed',
+            'profile_pic' => 'nullable',
+            'description' => 'nullable | max:255',
+            'homeland' => ' nullable | integer | exists:country,id_country',
+            'residence' => 'nullable | integer | exists:country,id_country'
+        ]);
+        return $validation;    
     }
     public function RegisterValidation(Request $request){
         $validation = Validator::make($request->all(),[
@@ -75,6 +91,17 @@ class UserController extends Controller
     }
 
     public function edit(Request $request, $id){
+
+        $validation = self::EditValidation($request, $id);
+
+        if ($validation->fails())
+        return $validation->errors();
+    
+        return $this -> editRequest($request, $id);
+
+    }
+
+    public function editRequest(request $request, $id){
         $User = new user();
         $User = user::findOrFail($id);   
         $User -> name = $request ->post("name"); 
@@ -83,7 +110,6 @@ class UserController extends Controller
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $password = Hash::make($request -> post("password"));
-        if (checkPassword())
         $User -> password = $password;
         $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
@@ -92,7 +118,6 @@ class UserController extends Controller
         $User -> save();  
         return $User;
 
-        return "Password can´t be the same";
     }
 
     public function logout(Request $request){
