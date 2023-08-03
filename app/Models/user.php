@@ -8,21 +8,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 #use Laravel\Sanctum\HasApiTokens;
 use Laravel\Passport\HasApiTokens;
+use App\Models\interest;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class user extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
-
-
-
-     use HasFactory;
-    use SoftDeletes;
-    use HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     protected $table = "users";
-
     
     public function homeland(): BelongsTo
     {
@@ -32,6 +27,11 @@ class user extends Authenticatable
     public function residence(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'residence');
+    }
+
+    public function interests(): BelongsToMany
+    {
+        return $this->belongsToMany(interest::class, 'likes', 'id_user', 'id_interest');
     }
 
     /*
