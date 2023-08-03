@@ -12,10 +12,30 @@ class LikesTest extends TestCase
     public function test_ListUserInterestGoodRequest(){
         $response = $this->get('api/v1/likes/user/1');
         $response -> assertStatus(200);
+        $response->assertJsonCount(1, "interests");
+        $response->assertJsonStructure([
+            "interests" => [
+                [
+                    "id_label",
+                    "interest",
+                    "created_at",
+                    "updated_at",
+                    "deleted_at",
+                    "pivot" => [
+                        "id_user",
+                        "id_interest"
+                    ]
+                ]
+            ]
+        ]);
+        $response -> assertJsonFragment([
+            "id_label"=> 1,
+            "interest"=> "gonzalito"
+        ]);
     }
 
     public function test_ListUserInterestBadRequest(){
-        $response = $this->get('api/v1/likes/user/');
+        $response = $this->get('api/v1/likes/user/999999');
         $response -> assertStatus(404);
     }
 
