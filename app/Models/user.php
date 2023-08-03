@@ -9,9 +9,10 @@ use Illuminate\Notifications\Notifiable;
 #use Laravel\Sanctum\HasApiTokens;
 use Laravel\Passport\HasApiTokens;
 use App\Models\interest;
-
+use App\Models\country;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class user extends Authenticatable
@@ -21,12 +22,12 @@ class user extends Authenticatable
     
     public function homeland(): BelongsTo
     {
-        return $this->belongsTo(Country::class, 'homeland');
+        return $this->belongsTo(country::class, 'homeland');
     }
 
     public function residence(): BelongsTo
     {
-        return $this->belongsTo(Country::class, 'residence');
+        return $this->belongsTo(country::class, 'residence');
     }
 
     public function interests(): BelongsToMany
