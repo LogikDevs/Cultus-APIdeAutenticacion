@@ -11,5 +11,10 @@ class country extends Model
     use SoftDeletes;
     protected $table = "country";
     protected $primaryKey = 'id_country';
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'likes', 'id_interest', 'id_user');
+    }
 }
   
