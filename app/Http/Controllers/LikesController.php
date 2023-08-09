@@ -60,12 +60,18 @@ class LikesController extends Controller
         return $Likes;
     }
 
-    public function delete(likes $likes, $id)
+    public function delete($id_user, $id_interest)
     {
-        $Likes = likes::findOrFail($id);
-        $Likes->delete(); 
+        $Likes = likes::where("id_user", $id_user)
+                                ->where("id_interest", $id_interest)
+                                ->first();
 
-        return ["response" => "Object with ID $id Deleted"];
+        if ($Likes){
+        $Likes->delete(); 
+        return ["response" => "Object Deleted"];
+        }
+
+        return response()->json(['response' => 'Object not found'], 404);
         
     }
 
