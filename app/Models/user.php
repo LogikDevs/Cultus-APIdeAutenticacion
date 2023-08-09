@@ -32,7 +32,7 @@ class user extends Authenticatable
 
     public function interests(): BelongsToMany
     {
-        return $this->belongsToMany(interest::class, 'likes', 'id_user', 'id_interest');
+        return $this->belongsToMany(interest::class, 'likes', 'id_user', 'id_interest')->whereNull('likes.deleted_at');
     }
 
     /*
