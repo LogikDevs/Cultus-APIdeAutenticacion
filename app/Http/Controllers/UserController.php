@@ -8,16 +8,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
- 
+    
+    public function ListCountry($id){
+        $user = User::find($id);
+        return $homeland = $user->homeland()->get();
+        $residence = $user->residence()->get();
+    }
+
     public function List()
     {
         return user::all();
     }
 
     public function ListOne(user $user, $id){
-        return user::findOrFail($id);
+         $User = user::findOrFail($id);
+         $User -> homeland = $User->homeland()->get();
+         $User -> residence = $User->residence()->get();
+         $user->makeHidden(['password']);
+         return $User;
     }
 
 
@@ -29,6 +40,21 @@ class UserController extends Controller
         return $validation->errors();
     
         return $this -> Registercreate($request);
+    }
+    public function EditValidation(Request $request, $id){
+        $validation = Validator::make($request->all(),[
+            'name' => 'required | alpha:ascii ',
+            'surname' => 'required | alpha:ascii',
+            'age' => 'required | integer',
+            'gender' => 'nullable | alpha',
+            'email' => ['required', 'email',  Rule::unique('users')->ignore($id)],
+            'password' =>'required | min:8 | confirmed',
+            'profile_pic' => 'nullable',
+            'description' => 'nullable | max:255',
+            'homeland' => ' nullable | integer | exists:country,id_country',
+            'residence' => 'nullable | integer | exists:country,id_country'
+        ]);
+        return $validation;    
     }
     public function RegisterValidation(Request $request){
         $validation = Validator::make($request->all(),[
@@ -66,8 +92,26 @@ class UserController extends Controller
         return auth('api')->user();
     }
 
+    public function checkPassword(int $id, string $password){
+        $user = user::find($id);
+         if (Hash::check($password, $user->password)) {
+            return false;
+         }
+         return true;
+    }
 
     public function edit(Request $request, $id){
+
+        $validation = self::EditValidation($request, $id);
+
+        if ($validation->fails())
+        return $validation->errors();
+    
+        return $this -> editRequest($request, $id);
+
+    }
+
+    public function editRequest(request $request, $id){
         $User = new user();
         $User = user::findOrFail($id);   
         $User -> name = $request ->post("name"); 
@@ -75,14 +119,15 @@ class UserController extends Controller
         $User -> age = $request ->post("age");
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
-        $User -> password = Hash::make($request -> post("password"));
+        $password = Hash::make($request -> post("password"));
+        $User -> password = $password;
         $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
-        $User -> residence = $request ->post("residence");
-        
+        $User -> residence = $request ->post("residence");     
         $User -> save();  
         return $User;
+
     }
 
     public function logout(Request $request){

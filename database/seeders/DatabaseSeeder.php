@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\user;
 use App\Models\country;
 use App\Models\interest;
+use App\Models\follows;
 use Laravel\Passport\Client;
 
 class DatabaseSeeder extends Seeder
@@ -17,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(countrySeeder::class);
         $this->call(userSeeder::class);
         $this->call(likesSeed::class);
-
+        $this->call(followsSeeder::class);
         Client::create([
             'id' => 100,
             'name' => 'Tests',

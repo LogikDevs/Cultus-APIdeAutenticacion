@@ -39,20 +39,6 @@ class UserTest extends TestCase
             "id"=> 1,
             "deleted_at"=> null
         ]);
-        /*
-        "name"=> "Javonte",
-            "surname"=> "Davis",
-            "age"=> 55,
-            "gender"=> "Female",
-            "mail"=> "white.andres@example.com",
-            "password"=> "$2y$10$Uk2OSlc15LylMdKUNQan7uNki84\/SuJo4dJ9TH7PdBUxSrDya9XxK",
-            "profile_pic"=> "https:\/\/via.placeholder.com\/200x200.png\/003311?text=ullam",
-            "description"=> "Natus consectetur et necessitatibus ex sunt.",
-            "homeland"=> 101,
-            "residence"=> 102,
-            "created_at"=> "2023-06-26T14:48:54.000000Z",
-            "updated_at"=> "2023-06-26T14:48:54.000000Z",
-        */
     }
 
     public function test_ListOneThatDoesntExist(){
@@ -252,5 +238,76 @@ class UserTest extends TestCase
             $response->assertJsonFragment(
                 ['message' => 'Logout succesful, token revoked']
             );
+        }
+
+        public function test_EditGoodRequest(){
+
+            $response = $this ->put('/api/v1/user/1', [
+                "name"=> "Francaaao",
+                "surname"=> "Fedullasdasdo",
+                "age"=> 3,
+                "gender"=> "male",
+                "email"=> "naaa@aaaa",
+                "password"=> "nashe12345",
+                "password_confirmation"=> "nashe12345",
+                "profile_pic"=> "http://dummyimage.com/136x100.png/cc0000/ffffff",
+                "description"=>"nashe",
+                "homeland"=> 2,
+                "residence"=> 23
+        ]);
+        $response -> assertStatus(200);
+        $response -> assertJsonStructure([
+                "name",
+                "surname",
+                "age",
+                "gender",
+                "email",
+                "password",
+                "profile_pic",
+                "description",
+                "homeland",
+                "residence"
+        ]);
+        $this->assertDatabaseHas('users', [
+            "name"=> "Francaaao",
+            "surname"=> "Fedullasdasdo",
+            "age"=> 3,
+            "gender"=> "male",
+            "email"=> "naaa@aaaa",
+            "profile_pic"=> "http://dummyimage.com/136x100.png/cc0000/ffffff",
+            "description"=>"nashe",
+            "homeland"=> 2,
+            "residence"=> 23
+        ]);
+        }
+
+        public function test_EditBadRequest(){
+            $response = $this ->put('api/v1/user/1', [
+                "name"=> "1",
+                "surname"=> 1,
+                "age"=> "a",
+                "gender"=> 11,
+                "email"=> "usuario@email.com",
+                "password"=> "franc",
+                "password_confirmation"=> "aa",
+                "profile_pic"=> "alguna",
+                "description"=>"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "homeland"=> "23a",
+                "residence"=> "111111111111"
+            ]);
+
+            $response -> assertStatus(200);
+            $response -> assertJsonFragment([
+                    "name"=> ["The name must only contain letters."],
+                    "surname"=> ["The surname must only contain letters."],
+                    "age"=> ["The age must be an integer."],
+                    "gender"=> ["The gender must only contain letters."],
+                    "email"=> ["The email has already been taken."],
+                    "password"=>[ "The password must be at least 8  characters.",
+                          "The password confirmation does not match." ],
+                    "description"=>["The description must not be greater than 255 characters."],
+                    "homeland"=>["The homeland must be an integer."],
+                    "residence"=> ["The selected residence is invalid."]
+            ]);
         }
 }
