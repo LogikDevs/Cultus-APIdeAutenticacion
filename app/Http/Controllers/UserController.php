@@ -1,16 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
-    
+
+    public function foto(){
+
+    }
+
     public function ListCountry($id){
         $user = User::find($id);
         return $homeland = $user->homeland()->get();
@@ -48,7 +53,7 @@ class UserController extends Controller
             'gender' => 'nullable | alpha',
             'email' => ['required', 'email',  Rule::unique('users')->ignore($id)],
             'password' =>'required | min:8 | confirmed',
-            'profile_pic' => 'nullable',
+             'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
             'residence' => 'nullable | integer | exists:country,id_country'
@@ -63,7 +68,7 @@ class UserController extends Controller
             'gender' => 'nullable | alpha',
             'email' => 'email | required | unique:users',
             'password' =>'required | min:8 | confirmed',
-            'profile_pic' => 'nullable',
+            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
             'residence' => 'nullable | integer | exists:country,id_country'
@@ -79,13 +84,15 @@ class UserController extends Controller
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $User -> password = Hash::make($request -> post("password"));
-        $User -> profile_pic = $request ->post("profile_pic");
+        
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
         $User -> save();       
         return $User;
     }
+
+
 
     public function ValidateToken(Request $request){
         return auth('api')->user();
@@ -100,6 +107,17 @@ class UserController extends Controller
     }
 
     public function edit(Request $request, $id){
+
+        $validation = self::EditValidation($request, $id);
+
+        if ($validation->fails())
+        return $validation->errors();
+    
+        return $this -> editRequest($request, $id);
+
+    }
+
+    public function editRequest(request $request, $id){
         $User = new user();
         $User = user::findOrFail($id);   
         $User -> name = $request ->post("name"); 
@@ -108,16 +126,19 @@ class UserController extends Controller
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $password = Hash::make($request -> post("password"));
-        if (checkPassword())
         $User -> password = $password;
-        $User -> profile_pic = $request ->post("profile_pic");
+
+        if ($request->profile_pic)
+        Storage::delete($User->profile_pic);
+        $path = $request->profile_pic('avatar')->store('avatars');
+        $User -> profile_pic = $path;
+        
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");     
         $User -> save();  
         return $User;
 
-        return "Password can´t be the same";
     }
 
     public function logout(Request $request){
