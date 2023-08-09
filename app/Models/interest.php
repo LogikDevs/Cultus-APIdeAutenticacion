@@ -10,4 +10,7 @@ class interest extends Model
     use HasFactory;
     use SoftDeletes;
     protected $table = "interest_label";
+    protected $primaryKey = 'id_label';
+    
+
 }

@@ -10,14 +10,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
- 
+    
+    public function ListCountry($id){
+        $user = User::find($id);
+        return $homeland = $user->homeland()->get();
+        $residence = $user->residence()->get();
+    }
+
     public function List()
     {
         return user::all();
     }
 
     public function ListOne(user $user, $id){
-        return user::findOrFail($id);
+         $User = user::findOrFail($id);
+         $User -> homeland = $User->homeland()->get();
+         $User -> residence = $User->residence()->get();
+         $user->makeHidden(['password']);
+         return $User;
     }
 
 

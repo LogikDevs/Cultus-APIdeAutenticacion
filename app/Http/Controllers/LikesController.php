@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\likes;
+use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 class LikesController extends Controller
@@ -13,7 +14,15 @@ class LikesController extends Controller
     }
 
     public function ListUserInterest($id){
-        return likes::all()->where("id_user", $id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User Not found'], 404);
+        }
+    
+        $interests = $user->interests()->get();
+
+    return response()->json(['interests' => $interests], 200);
     }
 
     public function ListInterestUsers($id){
@@ -51,12 +60,18 @@ class LikesController extends Controller
         return $Likes;
     }
 
-    public function delete(likes $likes, $id)
+    public function delete($id_user, $id_interest)
     {
-        $Likes = likes::findOrFail($id);
-        $Likes->delete(); 
+        $Likes = likes::where("id_user", $id_user)
+                                ->where("id_interest", $id_interest)
+                                ->first();
 
-        return ["response" => "Object with ID $id Deleted"];
+        if ($Likes){
+        $Likes->delete(); 
+        return ["response" => "Object Deleted"];
+        }
+
+        return response()->json(['response' => 'Object not found'], 404);
         
     }
 
