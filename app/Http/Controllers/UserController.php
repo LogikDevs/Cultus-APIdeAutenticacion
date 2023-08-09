@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Storage;
+
 
 use App\Models\user;
 use Illuminate\Http\Request;
@@ -10,22 +10,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
-
-    public function foto(){
-
-    }
-
-    public function ListCountry($id){
-        $user = User::find($id);
-        return $homeland = $user->homeland()->get();
-        $residence = $user->residence()->get();
-    }
-
+ 
     public function List()
     {
         return user::all();
     }
 
+    public function ListOne(user $user, $id){
+        return user::findOrFail($id);
+    }
 
 
     public function Register(Request $request){
@@ -60,7 +53,7 @@ class UserController extends Controller
             'gender' => 'nullable | alpha',
             'email' => 'email | required | unique:users',
             'password' =>'required | min:8 | confirmed',
-            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'profile_pic' => 'nullable',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
             'residence' => 'nullable | integer | exists:country,id_country'
@@ -76,15 +69,13 @@ class UserController extends Controller
         $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $User -> password = Hash::make($request -> post("password"));
-        
+        $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
         $User -> save();       
         return $User;
     }
-
-
 
     public function ValidateToken(Request $request){
         return auth('api')->user();
@@ -109,12 +100,7 @@ class UserController extends Controller
         $password = Hash::make($request -> post("password"));
         if (checkPassword())
         $User -> password = $password;
-
-        if ($request->profile_pic)
-        Storage::delete($User->profile_pic);
-        $path = $request->profile_pic('avatar')->store('avatars');
-        $User -> profile_pic = $path;
-        
+        $User -> profile_pic = $request ->post("profile_pic");
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");     
