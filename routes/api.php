@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function(){
     Route::get('/logout', [UserController::class,"logout"])->middleware('auth:api');
 
     Route::get("/user/{d}/",[UserController::class,"ListOne"]);
+    Route::get("/user/post/{d}/",[UserController::class,"ListOnePost"]);
     Route::put("/user/{d}/",[UserController::class,"edit"]);
     Route::post("/user", [UserController::class,"Register"]);
     Route::delete("/user/{d}/",[UserController::class,"delete"]);

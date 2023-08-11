@@ -16,10 +16,10 @@ class UserController extends Controller
 
     }
 
-    public function ListCountry($id){
-        $user = User::find($id);
-        return $homeland = $user->homeland()->get();
+    public function ListCountry(user $user, $id){
+        $homeland = $user->homeland()->get();
         $residence = $user->residence()->get();
+        return $user;
     }
 
     public function List()
@@ -35,6 +35,10 @@ class UserController extends Controller
          return $User;
     }
 
+    public function ListOnePost(user $user, $id){
+        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
+        return ($User);
+    }
 
     public function Register(Request $request){
         
