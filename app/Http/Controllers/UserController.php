@@ -130,7 +130,7 @@ class UserController extends Controller
 
         if ($request->profile_pic)
         Storage::delete($User->profile_pic);
-        $path = $request->profile_pic('avatar')->store('avatars');
+        $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
         $User -> profile_pic = $path;
         
         $User -> description = $request ->post("description");
