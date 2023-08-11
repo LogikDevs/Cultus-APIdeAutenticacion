@@ -12,34 +12,17 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
 
-    public function foto(){
-
-    }
-
-    public function ListCountry(user $user, $id){
-        $homeland = $user->homeland()->get();
-        $residence = $user->residence()->get();
-        return $user;
-    }
-
-    public function List()
-    {
-        return user::all();
-    }
-
     public function ListOne(user $user, $id){
-         $User = user::findOrFail($id);
-         $User -> homeland = $User->homeland()->get();
-         $User -> residence = $User->residence()->get();
-         $user->makeHidden(['password']);
-         return $User;
+        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
+        $user->makeHidden(['password']);
+        return $User;
     }
 
     public function ListOnePost(user $user, $id){
-        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
+        $User = ListOne($id);
         return ($User);
     }
-
+ 
     public function Register(Request $request){
         
         $validation = self::RegisterValidation($request);
@@ -95,8 +78,6 @@ class UserController extends Controller
         $User -> save();       
         return $User;
     }
-
-
 
     public function ValidateToken(Request $request){
         return auth('api')->user();
