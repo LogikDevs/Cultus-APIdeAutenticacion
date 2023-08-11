@@ -8,10 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 class LikesController extends Controller
 {
-    public function List()
-    {
-        return likes::all();
-    }
 
     public function ListUserInterest($id){
         $user = User::find($id);
@@ -27,11 +23,6 @@ class LikesController extends Controller
 
     public function ListInterestUsers($id){
         return likes::all()->where("id_interest",$id);
-    }
-
-    public function ListOne(likes $likes, $id)
-    {
-        return likes::findOrFail($id);
     }
 
     public function Create(request $request){

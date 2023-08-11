@@ -17,13 +17,4 @@ class CountryController extends Controller
         return country::findOrFail($id);
     }
 
-    public function Create(request $request)
-    {
-        $Country = new country();
-
-        $Country -> id_country = $request ->post("id_country");
-        $Country -> country_name = $request ->post("country_name");
-        $Country -> save();
-        return $Country;
-    }
 }

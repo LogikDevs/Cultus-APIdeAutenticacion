@@ -24,16 +24,6 @@ class FollowsController extends Controller
         return $validation;
     }
 
-    public function List()
-    {
-        return follows::all();
-    }
-
-    public function ListOne(follows $follows, $id)
-    {
-        return follows::findOrFail($id);
-    }
-
 
     public function ListFollowers($id){
         follows::where("id_followed", $id)->firstOrFail();
@@ -134,7 +124,6 @@ class FollowsController extends Controller
             "id_follower" => $request->post("id_followed"),
             "id_followed" => $request->post("id_follower"),
         ]);
-       // [$request2=>'id_follower', $request2=>'id_followed'] = [$request->post("id_followed"), $request->post("id_follower")];
         $follow2 = self::FindFollow($request);
 
         if (self::FollowEachOther($follow1, $follow2)){
