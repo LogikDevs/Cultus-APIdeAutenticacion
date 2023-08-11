@@ -16,5 +16,15 @@ class likesSeed extends Seeder
         ->has(interest::factory(),'id_interest')
         ->count(15)
         ->create();
+
+        
+        \App\Models\likes::factory()
+        ->count(1)
+        ->create([
+            "id" => "16",
+            "id_user" => "1",
+            "id_interest" => "1",
+        ]);
+    
     }
 }
