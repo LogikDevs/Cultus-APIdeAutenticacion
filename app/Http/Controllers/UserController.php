@@ -31,7 +31,7 @@ class UserController extends Controller
          $User = user::findOrFail($id);
          $User -> homeland = $User->homeland()->get();
          $User -> residence = $User->residence()->get();
-         $user->makeHidden(['password']);
+         $User->makeHidden(['password']);
          return $User;
     }
 
