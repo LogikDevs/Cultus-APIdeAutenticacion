@@ -31,13 +31,5 @@ class userSeeder extends Seeder
             ]);
         }
 
-        
-        /*
-        \App\Models\user::factory()
-        ->has(\App\Models\country::factory()->count(1), 'homeland')
-        ->has(\App\Models\country::factory()->count(1), 'residence')
-        ->count(10)
-        ->create();
-    */
     }
 }

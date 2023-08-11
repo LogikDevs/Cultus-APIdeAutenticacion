@@ -35,20 +35,4 @@ class user extends Authenticatable
         return $this->belongsToMany(interest::class, 'likes', 'id_user', 'id_interest')->whereNull('likes.deleted_at');
     }
 
-    /*
-
-    protected $fillable = [
-        'name',
-        'email',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-    */
 }
