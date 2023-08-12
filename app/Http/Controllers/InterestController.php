@@ -12,4 +12,8 @@ class InterestController extends Controller
     {
         return interest::all();
     }
+
+    public function ListOne(){
+        return interest::findOrFail($id);
+    }
 }

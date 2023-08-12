@@ -29,6 +29,7 @@ Route::prefix('v1')->group(function(){
     Route::post("/country", [CountryController::class,"Create"]);
 
     Route::get("/interest", [InterestController::class, "List"]);
+    Route::get("/interest/{d}", [InterestController::class, "ListOne"]);
 
     Route::get("/likes/{d}/",[LikesController::class,"ListOne"]);
     Route::get("/likes/user/{d}/",[LikesController::class,"ListUserInterest"]);
