@@ -10,7 +10,12 @@ class FollowsController extends Controller
     public function FollowValidation(request $request){
         $validation = Validator::make($request->all(),[
             'id_follower'=>'required | exists:users,id',
-            'id_followed'=>'required | exists:users,id'
+            'id_followed'=>[
+            'required',
+            'exists:users,id',
+            'different:id_follower',
+            'unique_follow_relation:' . $request->input('id_follower') . ',' . $request->input('id_followed'),
+            ]
         ]);
         return $validation;
     }
