@@ -26,12 +26,10 @@ class FollowsController extends Controller
 
 
     public function ListFollowers($id){
-        follows::where("id_followed", $id)->firstOrFail();
         return follows::all()->where("id_followed", $id);
     }
 
     public function ListFolloweds($id){
-        follows::where("id_follower", $id)->firstOrFail();
         return follows::all()->where("id_follower", $id);
     }
 
