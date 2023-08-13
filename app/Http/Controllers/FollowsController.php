@@ -20,6 +20,18 @@ class FollowsController extends Controller
         return $validation;
     }
 
+    public function UnFollowValidation(request $request){
+        $validation = Validator::make($request->all(),[
+            'id_follower'=>'required | exists:users,id',
+            'id_followed'=>[
+            'required',
+            'exists:users,id',
+            'different:id_follower',
+            ]
+        ]);
+        return $validation;
+    }
+
     public function FriendValidation(request $request){
         $validation = Validator::make($request->all(),[
             'id_follower'=>'required | exists:users,id',
@@ -75,7 +87,7 @@ class FollowsController extends Controller
     }
 
     public function UnFollow(request $request){
-        $validation = self::FollowValidation($request);
+        $validation = self::UnFollowValidation($request);
         if ($validation->fails())
         return $validation->errors();
 
