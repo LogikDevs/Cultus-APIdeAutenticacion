@@ -13,13 +13,13 @@ class UserController extends Controller
 {
 
     public function ListOne(user $user, $id){
-        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
-        $user->makeHidden(['password']);
+        $User = user::findOrFail($id);
+        $User->makeHidden(['password']);
         return $User;
     }
 
     public function ListOnePost(user $user, $id){
-        $User = ListOne($id);
+        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
         return ($User);
     }
  
