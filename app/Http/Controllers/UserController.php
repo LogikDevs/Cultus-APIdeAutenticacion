@@ -12,17 +12,25 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
 
-    public function ListOne(user $user, $id){
+    public function ListOne($id){
         $User = user::findOrFail($id);
         $User->makeHidden(['password']);
         return $User;
     }
 
-    public function ListOnePost(user $user, $id){
+    public function ListOnePost($id){
         $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
         return ($User);
     }
  
+
+    public function ListOneProfile($id){
+        $User = user::findOrFail($id);
+        $User->makeHidden(['email']);
+        return $User;
+    }
+
+
     public function Register(Request $request){
         
         $validation = self::RegisterValidation($request);
