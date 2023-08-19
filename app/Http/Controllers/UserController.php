@@ -20,8 +20,7 @@ class UserController extends Controller
 
     public function ListOnePost($id){
         $User = new user();
-        $User = User::with(['homeland', 'residence'])->select('id','name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
-        $User->interests = $User->interests()->get();
+        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
         return ($User);
     }
  
@@ -30,6 +29,7 @@ class UserController extends Controller
         $User = user::findOrFail($id);
         $User->makeHidden(['email']);
         $User->makeHidden(['password']);
+        $User->interests = $User->interests()->get();
         return $User;
     }
 
