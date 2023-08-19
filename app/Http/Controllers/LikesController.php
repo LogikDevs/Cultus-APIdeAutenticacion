@@ -11,7 +11,6 @@ class LikesController extends Controller
 
     public function ListUserInterest($id){
         $user = User::find($id);
-
         if (!$user) {
             return response()->json(['message' => 'User Not found'], 404);
         }
