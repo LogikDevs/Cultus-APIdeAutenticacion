@@ -43,6 +43,15 @@ class UserController extends Controller
     
         return $this -> Registercreate($request);
     }
+    public function Register2(Request $request, $id){
+        
+        $validation = self::Register2Validation($request);
+
+        if ($validation->fails())
+        return $validation->errors();
+    
+        return $this -> Register2create($request);
+    }
     public function EditValidation(Request $request, $id){
         $validation = Validator::make($request->all(),[
             'name' => 'required | alpha:ascii ',
@@ -98,7 +107,7 @@ class UserController extends Controller
         if ($request->profile_pic)
         $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
         $User -> profile_pic = $path;
-        
+
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
         $User -> save();       
