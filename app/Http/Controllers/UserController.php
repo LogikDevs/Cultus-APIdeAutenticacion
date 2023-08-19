@@ -19,7 +19,9 @@ class UserController extends Controller
     }
 
     public function ListOnePost($id){
-        $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
+        $User = new user();
+        $User = User::with(['homeland', 'residence'])->select('id','name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
+        $User->interests = $User->interests()->get();
         return ($User);
     }
  
