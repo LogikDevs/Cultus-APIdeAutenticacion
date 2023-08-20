@@ -43,11 +43,19 @@ class FollowsController extends Controller
 
 
     public function ListFollowers($id){
-        return follows::all()->where("id_followed", $id);
+        $follows = follows::all()->where("id_followed", $id);
+        if ($follows->isEmpty()) {
+            return response()->json(['message' => 'Follow Not found'], 404);
+        }
+        return $follows;
     }
 
     public function ListFolloweds($id){
-        return follows::all()->where("id_follower", $id);
+        $follows =  follows::all()->where("id_follower", $id);
+        if ($follows->isEmpty()) {
+            return response()->json(['message' => 'Follow Not found'], 404);
+        }
+        return $follows;
     }
 
     public function ListFriends($id){

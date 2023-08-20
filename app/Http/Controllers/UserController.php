@@ -43,6 +43,15 @@ class UserController extends Controller
     
         return $this -> Registercreate($request);
     }
+    public function Register2(Request $request, $id){
+        
+        $validation = self::Register2Validation($request);
+
+        if ($validation->fails())
+        return $validation->errors();
+    
+        return $this -> Register2create($request, $id);
+    }
     public function EditValidation(Request $request, $id){
         $validation = Validator::make($request->all(),[
             'name' => 'required | alpha:ascii ',
@@ -63,33 +72,48 @@ class UserController extends Controller
             'name' => 'required | alpha:ascii ',
             'surname' => 'required | alpha:ascii',
             'age' => 'required | integer',
-            'gender' => 'nullable | alpha',
             'email' => 'email | required | unique:users',
             'password' =>'required | min:8 | confirmed',
-            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
-            'description' => 'nullable | max:255',
-            'homeland' => ' nullable | integer | exists:country,id_country',
-            'residence' => 'nullable | integer | exists:country,id_country'
         ]);
         return $validation;    
     }
+
     public function RegisterCreate (Request $request){
         $User = new user();
         
         $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
-        $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $User -> password = Hash::make($request -> post("password"));
-        
-        $User -> description = $request ->post("description");
-        $User -> homeland = $request ->post("homeland");
-        $User -> residence = $request ->post("residence");
         $User -> save();       
         return $User;
     }
 
+    public function Register2Validation(Request $request){
+        $validation = Validator::make($request->all(),[
+            'gender' => 'nullable | alpha',
+            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'description' => 'nullable | max:255',
+            'homeland' => ' nullable | integer | exists:country,id_country',
+            'residence' => 'nullable | integer | exists:country,id_country'
+        ]);
+        return $validation;
+    }
+    public function Register2Create (Request $request, $id){
+        $User = user::findOrFail($id);
+        $User -> gender = $request ->post("gender");
+        $User -> description = $request ->post("description");
+        
+        if ($request->exists('profile_pic')){
+        $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
+        $User -> profile_pic = $path;
+        }
+        $User -> homeland = $request ->post("homeland");
+        $User -> residence = $request ->post("residence");
+        $User -> save();       
+        return response()->json([$User], 201);
+    }
     public function ValidateToken(Request $request){
         return auth('api')->user();
     }

@@ -22,6 +22,7 @@ Route::prefix('v1')->group(function(){
     Route::get("/user/profile/{d}/",[UserController::class,"ListOneProfile"]);
     Route::put("/user/{d}/",[UserController::class,"edit"]);
     Route::post("/user", [UserController::class,"Register"]);
+    Route::post("/user/{d}", [UserController::class,"Register2"]);
     Route::delete("/user/{d}/",[UserController::class,"delete"]);
 
 
@@ -32,7 +33,6 @@ Route::prefix('v1')->group(function(){
     Route::get("/interest", [InterestController::class, "List"]);
     Route::get("/interest/{d}", [InterestController::class, "ListOne"]);
 
-    Route::get("/likes/{d}/",[LikesController::class,"ListOne"]);
     Route::get("/likes/user/{d}/",[LikesController::class,"ListUserInterest"]);
     Route::get("/likes/interest/{d}/",[LikesController::class,"ListInterestUsers"]);
     Route::post("/likes", [LikesController::class,"Create"]);

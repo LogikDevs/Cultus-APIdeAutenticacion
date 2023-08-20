@@ -53,7 +53,7 @@ class LikesTest extends TestCase
     public function test_CreateGoodRequest(){
         $response = $this->post('api/v1/likes/', [
             "id_interest"=>1,
-            "id_user"=>1
+            "id_user"=>2
         ]);
 
         $response -> assertStatus(201);
@@ -66,7 +66,7 @@ class LikesTest extends TestCase
         ]);
         $this->assertDatabaseHas('likes',[
             "id_interest"=> 1,
-            "id_user"=>1
+            "id_user"=>2
         ]);
     }
 
@@ -83,11 +83,12 @@ class LikesTest extends TestCase
     }
 
     public function test_DeleteGoodRequest(){
-        $response = $this->delete('api/v1/likes/1' );
+        $response = $this->delete('api/v1/likes/2/1' );
         $response -> assertStatus(200);
-        $response -> assertJsonFragment(["response"=> "Object with ID 1 Deleted"]);
+        $response -> assertJsonFragment(["response"=> "Object Deleted"]);
         $this->assertDatabaseMissing("likes",[
-            "id"=>"1",
+            "id_interest"=>1,
+            "id_user"=>2,
             "deleted_at"=> null
         ]);
     }
