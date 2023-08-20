@@ -44,7 +44,7 @@ class FollowsTest extends TestCase
     
     public function test_FollowGoodRequest(){
       $response = $this->post('api/v1/follow', [
-          "id_followed"=>2,
+          "id_followed"=>3,
           "id_follower"=>1
       ]);
 

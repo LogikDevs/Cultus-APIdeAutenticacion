@@ -50,7 +50,7 @@ class UserController extends Controller
         if ($validation->fails())
         return $validation->errors();
     
-        return $this -> Register2create($request);
+        return $this -> Register2create($request, $id);
     }
     public function EditValidation(Request $request, $id){
         $validation = Validator::make($request->all(),[
@@ -104,14 +104,15 @@ class UserController extends Controller
         $User = user::findOrFail($id);
         $User -> gender = $request ->post("gender");
         $User -> description = $request ->post("description");
-        if ($request->profile_pic)
+        
+        if ($request->exists('profile_pic')){
         $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
         $User -> profile_pic = $path;
-
+        }
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
         $User -> save();       
-        return $User;
+        return response()->json([$User], 201);
     }
     public function ValidateToken(Request $request){
         return auth('api')->user();
