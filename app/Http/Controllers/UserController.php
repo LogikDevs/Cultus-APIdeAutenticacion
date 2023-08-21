@@ -106,7 +106,7 @@ class UserController extends Controller
         $User -> description = $request ->post("description");
         
         if ($request->exists('profile_pic')){
-        $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
+        $path = $request->file('profile_pic')->store('/public/profile_pic');
         $User -> profile_pic = $path;
         }
         $User -> homeland = $request ->post("homeland");
@@ -150,7 +150,7 @@ class UserController extends Controller
 
         if ($request->profile_pic)
         Storage::delete($User->profile_pic);
-        $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
+        $path = $request->file('profile_pic')->store('/public/profile_pic');
         $User -> profile_pic = $path;
         
         $User -> description = $request ->post("description");
