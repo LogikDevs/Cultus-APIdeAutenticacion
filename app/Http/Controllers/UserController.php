@@ -93,7 +93,7 @@ class UserController extends Controller
     public function Register2Validation(Request $request){
         $validation = Validator::make($request->all(),[
             'gender' => 'nullable | alpha',
-            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:5120',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
             'residence' => 'nullable | integer | exists:country,id_country'
@@ -105,7 +105,7 @@ class UserController extends Controller
         $User -> gender = $request ->post("gender");
         $User -> description = $request ->post("description");
         
-        if ($request->exists('profile_pic')){
+        if ($request->hasFile('profile_pic')){
         $path = $request->file('profile_pic')->store('/public/profile_pic');
         $User -> profile_pic = $path;
         }
@@ -114,6 +114,8 @@ class UserController extends Controller
         $User -> save();       
         return response()->json([$User], 201);
     }
+
+
     public function ValidateToken(Request $request){
         return auth('api')->user();
     }
