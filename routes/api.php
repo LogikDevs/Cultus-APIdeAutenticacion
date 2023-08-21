@@ -24,7 +24,7 @@ Route::prefix('v1')->group(function(){
     Route::post("/user", [UserController::class,"Register"]);
     Route::post("/user/{d}", [UserController::class,"Register2"]);
     Route::delete("/user/{d}/",[UserController::class,"delete"]);
-
+ 
 
     Route::get("/country", [CountryController::class,"List"]);
     Route::get("/country/{d}/",[CountryController::class,"ListOne"]);

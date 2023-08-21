@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
             return !DB::table('follows')
                 ->where('id_follower', $id_follower)
                 ->where('id_followed', $id_followed)
+                ->where('deleted_at', null)
                 ->exists();
             });
     }
