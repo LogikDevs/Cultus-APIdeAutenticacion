@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
 
@@ -106,8 +107,10 @@ class UserController extends Controller
         $User -> description = $request ->post("description");
         
         if ($request->hasFile('profile_pic')){
-        $path = $request->file('profile_pic')->store('/public/profile_pic');
-        $User -> profile_pic = $path;
+        $image = $request->file('profile_pic');
+        $imageExtension = $image->getClientOriginalExtension();
+        $path = $image->store('/public/profile_pic');
+        $User -> profile_pic = basename($path);
         }
         $User -> homeland = $request ->post("homeland");
         $User -> residence = $request ->post("residence");
@@ -150,10 +153,13 @@ class UserController extends Controller
         $password = Hash::make($request -> post("password"));
         $User -> password = $password;
 
-        if ($request->profile_pic)
-        Storage::delete($User->profile_pic);
-        $path = $request->file('profile_pic')->store('/public/profile_pic');
-        $User -> profile_pic = $path;
+        if ($request->hasFile('profile_pic')){
+            Storage::delete($User->profile_pic);
+            $image = $request->file('profile_pic');
+            $imageExtension = $image->getClientOriginalExtension();
+            $path = $image->store('/public/profile_pic');
+            $User -> profile_pic = basename($path);
+            }
         
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
