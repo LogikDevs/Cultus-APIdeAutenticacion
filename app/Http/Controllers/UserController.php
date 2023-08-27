@@ -27,7 +27,7 @@ class UserController extends Controller
  
 
     public function ListOneProfile($id){
-        $User = user::findOrFail($id);
+        $User = user::with(['homeland', 'residence'])->findOrFail($id);
         $User->makeHidden(['email']);
         $User->makeHidden(['password']);
         $User->interests = $User->interests()->get();
