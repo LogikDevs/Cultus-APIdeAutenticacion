@@ -13,14 +13,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::prefix('v1')->group(function(){
-    Route::get('/validate',[UserController::class,"ValidateToken"])->middleware('auth:api');
-    Route::get('/logout', [UserController::class,"logout"])->middleware('auth:api');
+Route::prefix('v1')->middleware('auth:api')->group(function(){
+
+    Route::get('/validate',[UserController::class,"ValidateToken"]);
+    Route::get('/logout', [UserController::class,"logout"]);
 
     Route::get("/user/{d}/",[UserController::class,"ListOne"]);
     Route::get("/user/post/{d}/",[UserController::class,"ListOnePost"]);
     Route::get("/user/profile/{d}/",[UserController::class,"ListOneProfile"]);
-    Route::put("/user/{d}/",[UserController::class,"edit"]);
+    Route::put("/user",[UserController::class,"edit"]);
     Route::post("/user", [UserController::class,"Register"]);
     Route::post("/user/2", [UserController::class,"Register2"])->middleware('auth:api');
     Route::delete("/user/{d}/",[UserController::class,"delete"]);
