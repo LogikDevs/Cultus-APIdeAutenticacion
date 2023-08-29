@@ -173,9 +173,9 @@ class UserController extends Controller
         return ['message' => 'Logout succesful, token revoked'];   
     }
 
-    public function delete(user $user, $id)
+    public function delete(user $user)
     {
-        $User = user::findOrFail($id);
+        
         $User->delete(); 
 
         return ["response" => "Object with ID $id Deleted"];
