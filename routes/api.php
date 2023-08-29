@@ -26,7 +26,6 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::get("/user/post/{d}/",[UserController::class,"ListOnePost"]);
     Route::get("/user/profile/{d}/",[UserController::class,"ListOneProfile"]);
     Route::put("/user",[UserController::class,"edit"]);
-    Route::post("/user", [UserController::class,"Register"]);
     Route::post("/user/2", [UserController::class,"Register2"]);
     Route::delete("/user",[UserController::class,"delete"]);
  
