@@ -131,20 +131,19 @@ class UserController extends Controller
          return true;
     }
 
-    public function edit(Request $request, $id){
-
+    public function edit(Request $request){
+        $user = $this -> ValidateToken($request);
+        $id = $user -> id;
         $validation = self::EditValidation($request, $id);
 
         if ($validation->fails())
         return $validation->errors();
-    
-        return $this -> editRequest($request, $id);
+        
+        return $this -> editRequest($request, $user);
 
     }
 
-    public function editRequest(request $request, $id){
-        $User = new user();
-        $User = user::findOrFail($id);   
+    public function editRequest(request $request, user $User ){ 
         $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
