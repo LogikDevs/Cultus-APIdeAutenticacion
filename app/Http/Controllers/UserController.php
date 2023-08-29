@@ -44,14 +44,14 @@ class UserController extends Controller
     
         return $this -> Registercreate($request);
     }
-    public function Register2(Request $request, $id){
+    public function Register2(Request $request){
         
         $validation = self::Register2Validation($request);
 
         if ($validation->fails())
         return $validation->errors();
-    
-        return $this -> Register2create($request, $id);
+        $user = $this -> ValidateToken($request);
+        return $this -> Register2create($request, $user->id);
     }
     public function EditValidation(Request $request, $id){
         $validation = Validator::make($request->all(),[

@@ -22,7 +22,7 @@ Route::prefix('v1')->group(function(){
     Route::get("/user/profile/{d}/",[UserController::class,"ListOneProfile"]);
     Route::put("/user/{d}/",[UserController::class,"edit"]);
     Route::post("/user", [UserController::class,"Register"]);
-    Route::post("/user/{d}", [UserController::class,"Register2"]);
+    Route::post("/user/2", [UserController::class,"Register2"])->middleware('auth:api');
     Route::delete("/user/{d}/",[UserController::class,"delete"]);
  
 
