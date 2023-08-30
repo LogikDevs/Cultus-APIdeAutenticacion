@@ -173,12 +173,12 @@ class UserController extends Controller
         return ['message' => 'Logout succesful, token revoked'];   
     }
 
-    public function delete(user $user)
+    public function delete(Request $request)
     {
-        
+        $User = $this-> ValidateToken($request);
         $User->delete(); 
 
-        return ["response" => "Object with ID $id Deleted"];
+        return ["response" => "Object with ID $User->id Deleted"];
         
     }
 }
