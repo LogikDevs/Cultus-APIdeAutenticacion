@@ -49,8 +49,10 @@ class LikesController extends Controller
         return $Likes;
     }
 
-    public function delete($id_user, $id_interest)
+    public function delete($id_interest)
     {
+        $user = (new UserController)->ValidateToken($request);
+        $id_user = $user -> id;
         $Likes = likes::where("id_interest", $id_interest)
                         ->where("id_user", $id_user)
                         ->first();
