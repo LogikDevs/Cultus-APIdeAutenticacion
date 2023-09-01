@@ -37,7 +37,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::get("/interest", [InterestController::class, "List"]);
     Route::get("/interest/{d}", [InterestController::class, "ListOne"]);
 
-    Route::get("/likes/user/",[LikesController::class,"ListUserInterest"]);
+    Route::get("/likes/user/{d}/",[LikesController::class,"ListUserInterest"]);
     Route::get("/likes/interest/{d}/",[LikesController::class,"ListInterestUsers"]);
     Route::post("/likes", [LikesController::class,"Create"]);
     Route::delete("/likes/{d}/{e}", [LikesController::class,"delete"]);
