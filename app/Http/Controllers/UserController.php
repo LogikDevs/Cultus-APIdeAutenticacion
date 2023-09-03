@@ -134,6 +134,7 @@ class UserController extends Controller
     public function edit(Request $request){
         $user = $this -> ValidateToken($request);
         $id = $user -> id;
+        
         $validation = self::EditValidation($request, $id);
 
         if ($validation->fails())
