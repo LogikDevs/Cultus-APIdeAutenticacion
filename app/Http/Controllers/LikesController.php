@@ -5,17 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\likes;
 use App\Models\user;
 use Illuminate\Http\Request;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Validator;
 class LikesController extends Controller
 {
 
-    public function ListUserInterest(request $request){
-        $user = (new UserController)->ValidateToken($request);
+    public function ListUserInterest($id){
+        $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'User Not found'], 404);
-        } 
+        }
+    
         $interests = $user->interests()->get();
+
     return response()->json(['interests' => $interests], 200);
     }
 
@@ -59,10 +60,8 @@ class LikesController extends Controller
         return $Likes;
     }
 
-    public function delete($id_interest)
+    public function delete($id_user, $id_interest)
     {
-        $user = (new UserController)->ValidateToken($request);
-        $id_user = $user -> id;
         $Likes = likes::where("id_interest", $id_interest)
                         ->where("id_user", $id_user)
                         ->first();
