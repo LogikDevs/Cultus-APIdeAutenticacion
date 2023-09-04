@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 class LikesController extends Controller
 {
 
-    public function ListUserInterest($id){
-        $user = User::find($id);
+    public function ListUserInterest(request $request){
+        $user = (new UserController)->ValidateToken($request);
         if (!$user) {
             return response()->json(['message' => 'User Not found'], 404);
         }
