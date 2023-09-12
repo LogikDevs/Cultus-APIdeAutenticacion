@@ -13,21 +13,7 @@ class InterestController extends Controller
         return interest::all();
     }
 
-    public function ListOne(interest $interest, $id)
-    {
+    public function ListOne($id){
         return interest::findOrFail($id);
     }
-
-    public function Create(request $request)
-    {
-        $Interest = new interest();
-
-        $Interest -> id_label = $request ->post("id_label");
-        $Interest -> interest = $request ->post("interest");
-        $Interest -> save();
-        return $Interest;
-    }
-
-    
-
 }

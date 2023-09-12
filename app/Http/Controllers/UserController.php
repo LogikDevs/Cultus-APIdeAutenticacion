@@ -9,36 +9,31 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
 
-    public function foto(){
-
+    public function ListOne($id){
+        $User = user::findOrFail($id);
+        $User->makeHidden(['password']);
+        return $User;
     }
 
-    public function ListCountry(user $user, $id){
-        $homeland = $user->homeland()->get();
-        $residence = $user->residence()->get();
-        return $user;
-    }
-
-    public function List()
-    {
-        return user::all();
-    }
-
-    public function ListOne(user $user, $id){
-         $User = user::findOrFail($id);
-         $User -> homeland = $User->homeland()->get();
-         $User -> residence = $User->residence()->get();
-         $User->makeHidden(['password']);
-         return $User;
-    }
-
-    public function ListOnePost(user $user, $id){
+    public function ListOnePost($id){
+        $User = new user();
         $User = User::with(['homeland', 'residence'])->select('name', 'surname', 'age', 'homeland', 'residence')->findOrFail($id);
         return ($User);
     }
+ 
+    public function ListOneProfile($id){
+        $User = user::with(['homeland', 'residence'])->findOrFail($id);
+        $User->makeHidden(['email']);
+        $User->makeHidden(['password']);
+        $User->interests = $User->interests()->get();
+        return $User;
+
+    }
+
 
     public function Register(Request $request){
         
@@ -48,6 +43,15 @@ class UserController extends Controller
         return $validation->errors();
     
         return $this -> Registercreate($request);
+    }
+    public function Register2(Request $request){
+        
+        $validation = self::Register2Validation($request);
+
+        if ($validation->fails())
+        return $validation->errors();
+        $user = $this -> ValidateToken($request);
+        return $this -> Register2create($request, $user->id);
     }
     public function EditValidation(Request $request, $id){
         $validation = Validator::make($request->all(),[
@@ -69,33 +73,50 @@ class UserController extends Controller
             'name' => 'required | alpha:ascii ',
             'surname' => 'required | alpha:ascii',
             'age' => 'required | integer',
-            'gender' => 'nullable | alpha',
             'email' => 'email | required | unique:users',
             'password' =>'required | min:8 | confirmed',
-            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
-            'description' => 'nullable | max:255',
-            'homeland' => ' nullable | integer | exists:country,id_country',
-            'residence' => 'nullable | integer | exists:country,id_country'
         ]);
         return $validation;    
     }
+
     public function RegisterCreate (Request $request){
         $User = new user();
         
         $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
-        $User -> gender = $request ->post("gender");
         $User -> email = $request ->post("email");
         $User -> password = Hash::make($request -> post("password"));
-        
-        $User -> description = $request ->post("description");
-        $User -> homeland = $request ->post("homeland");
-        $User -> residence = $request ->post("residence");
         $User -> save();       
         return $User;
     }
 
+    public function Register2Validation(Request $request){
+        $validation = Validator::make($request->all(),[
+            'gender' => 'nullable | alpha',
+            'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:5120',
+            'description' => 'nullable | max:255',
+            'homeland' => ' nullable | integer | exists:country,id_country',
+            'residence' => 'nullable | integer | exists:country,id_country'
+        ]);
+        return $validation;
+    }
+    public function Register2Create (Request $request, $id){
+        $User = user::findOrFail($id);
+        $User -> gender = $request ->post("gender");
+        $User -> description = $request ->post("description");
+        
+        if ($request->hasFile('profile_pic')){
+        $image = $request->file('profile_pic');
+        $imageExtension = $image->getClientOriginalExtension();
+        $path = $image->store('/public/profile_pic');
+        $User -> profile_pic = basename($path);
+        }
+        $User -> homeland = $request ->post("homeland");
+        $User -> residence = $request ->post("residence");
+        $User -> save();       
+        return response()->json([$User], 201);
+    }
 
 
     public function ValidateToken(Request $request){
@@ -110,20 +131,20 @@ class UserController extends Controller
          return true;
     }
 
-    public function edit(Request $request, $id){
-
+    public function edit(Request $request){
+        $user = $this -> ValidateToken($request);
+        $id = $user -> id;
+        
         $validation = self::EditValidation($request, $id);
 
         if ($validation->fails())
         return $validation->errors();
-    
-        return $this -> editRequest($request, $id);
+        
+        return $this -> editRequest($request, $user);
 
     }
 
-    public function editRequest(request $request, $id){
-        $User = new user();
-        $User = user::findOrFail($id);   
+    public function editRequest(request $request, user $User ){ 
         $User -> name = $request ->post("name"); 
         $User -> surname = $request ->post("surname");
         $User -> age = $request ->post("age");
@@ -132,10 +153,13 @@ class UserController extends Controller
         $password = Hash::make($request -> post("password"));
         $User -> password = $password;
 
-        if ($request->profile_pic)
-        Storage::delete($User->profile_pic);
-        $path = $request->profile_pic('profile_pic')->store('/public/profile_pic');
-        $User -> profile_pic = $path;
+        if ($request->hasFile('profile_pic')){
+            Storage::delete($User->profile_pic);
+            $image = $request->file('profile_pic');
+            $imageExtension = $image->getClientOriginalExtension();
+            $path = $image->store('/public/profile_pic');
+            $User -> profile_pic = basename($path);
+            }
         
         $User -> description = $request ->post("description");
         $User -> homeland = $request ->post("homeland");
@@ -150,12 +174,12 @@ class UserController extends Controller
         return ['message' => 'Logout succesful, token revoked'];   
     }
 
-    public function delete(user $user, $id)
+    public function delete(Request $request)
     {
-        $User = user::findOrFail($id);
+        $User = $this-> ValidateToken($request);
         $User->delete(); 
 
-        return ["response" => "Object with ID $id Deleted"];
+        return ["response" => "Object with ID $User->id Deleted"];
         
     }
 }

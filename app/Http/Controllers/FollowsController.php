@@ -10,7 +10,24 @@ class FollowsController extends Controller
     public function FollowValidation(request $request){
         $validation = Validator::make($request->all(),[
             'id_follower'=>'required | exists:users,id',
-            'id_followed'=>'required | exists:users,id'
+            'id_followed'=>[
+            'required',
+            'exists:users,id',
+            'different:id_follower',
+            'unique_follow_relation:' . $request->input('id_follower') . ',' . $request->input('id_followed'),
+            ]
+        ]);
+        return $validation;
+    }
+
+    public function UnFollowValidation(request $request){
+        $validation = Validator::make($request->all(),[
+            'id_follower'=>'required | exists:users,id',
+            'id_followed'=>[
+            'required',
+            'exists:users,id',
+            'different:id_follower',
+            ]
         ]);
         return $validation;
     }
@@ -24,25 +41,15 @@ class FollowsController extends Controller
         return $validation;
     }
 
-    public function List()
-    {
-        return follows::all();
-    }
-
-    public function ListOne(follows $follows, $id)
-    {
-        return follows::findOrFail($id);
-    }
-
 
     public function ListFollowers($id){
-        follows::where("id_followed", $id)->firstOrFail();
-        return follows::all()->where("id_followed", $id);
+        $follows = follows::all()->where("id_followed", $id);
+        return $follows;
     }
 
     public function ListFolloweds($id){
-        follows::where("id_follower", $id)->firstOrFail();
-        return follows::all()->where("id_follower", $id);
+        $follows =  follows::all()->where("id_follower", $id);
+        return $follows;
     }
 
     public function ListFriends($id){
@@ -82,7 +89,7 @@ class FollowsController extends Controller
     }
 
     public function UnFollow(request $request){
-        $validation = self::FollowValidation($request);
+        $validation = self::UnFollowValidation($request);
         if ($validation->fails())
         return $validation->errors();
 
@@ -134,7 +141,6 @@ class FollowsController extends Controller
             "id_follower" => $request->post("id_followed"),
             "id_followed" => $request->post("id_follower"),
         ]);
-       // [$request2=>'id_follower', $request2=>'id_followed'] = [$request->post("id_followed"), $request->post("id_follower")];
         $follow2 = self::FindFollow($request);
 
         if (self::FollowEachOther($follow1, $follow2)){
