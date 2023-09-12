@@ -25,13 +25,13 @@ class UserController extends Controller
         return ($User);
     }
  
-
     public function ListOneProfile($id){
         $User = user::with(['homeland', 'residence'])->findOrFail($id);
         $User->makeHidden(['email']);
         $User->makeHidden(['password']);
         $User->interests = $User->interests()->get();
         return $User;
+
     }
 
 
