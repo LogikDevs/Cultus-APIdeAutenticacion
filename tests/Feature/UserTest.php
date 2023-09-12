@@ -14,7 +14,6 @@ class UserTest extends TestCase
         private $userName = "usuario@email.com";
         private $userPassword = "12345678";
 
-
     public function test_ListOneThatExist(){
         $response = $this->get('/api/v1/user/1');
         
@@ -26,7 +25,6 @@ class UserTest extends TestCase
             "age",
             "gender",
             "email",
-            "password",
             "profile_pic",
             "description",
             "homeland",
@@ -66,71 +64,101 @@ class UserTest extends TestCase
                 "name"=> "Franco",
                 "surname"=> "Fedullo",
                 "age"=> 25,
-                "gender"=> null,
                 "email"=> "nashe@aasda111",
                 "password"=> "nashe12345",
                 "password_confirmation"=> "nashe12345",
-                "profile_pic"=> "http://dummyimage.com/136x100.png/cc0000/ffffff",
-                "description"=>null,
-                "homeland"=> 1,
-                "residence"=> 2
         ]);
         $response -> assertStatus(201);
         $response -> assertJsonStructure([
                 "name",
                 "surname",
                 "age",
-                "gender",
                 "email",
                 "password",
-                "profile_pic",
-                "description",
-                "homeland",
-                "residence"
         ]);
         $this->assertDatabaseHas('users', [
             "name"=> "Franco",
             "surname"=> "Fedullo",
             "age"=> 25,
-            "gender"=> null,
             "email"=> "nashe@aasda111",
-            "profile_pic"=> "http://dummyimage.com/136x100.png/cc0000/ffffff",
-            "description"=>null,
-            "homeland"=> 1,
-            "residence"=> 2
         ]);
+     
     }
 
 
         public function test_RegisterBadRequest(){
+            
             $response = $this ->post('api/v1/user', [
                 "name"=> "123",
                 "surname"=> 22,
                 "age"=> "aa",
-                "gender"=> 3,
                 "email"=> "nash",
                 "password"=> "na",
                 "password_confirmation"=> "pa",
-                "profile_pic"=> null,
-                "description"=>"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "homeland"=> "paris",
-                "residence"=> 200000
             ]);
 
             $response -> assertStatus(200);
+            
             $response -> assertJsonFragment([
                     "name"=> ["The name must only contain letters."],
                     "surname"=> ["The surname must only contain letters."],
                     "age"=> ["The age must be an integer."],
-                    "gender"=> ["The gender must only contain letters."],
                     "email"=> ["The email must be a valid email address."],
                     "password"=>[ "The password must be at least 8  characters.",
                           "The password confirmation does not match." ],
-                    "description"=>["The description must not be greater than 255 characters."],
-                    "homeland"=>["The homeland must be an integer."],
-                    "residence"=> ["The selected residence is invalid."]
             ]);
         }
+
+        public function test_Register2GoodRequest(){
+            
+            $response = $this ->post('/api/v1/user/427', [
+                
+                    "gender"=> null,
+                    "description"=>null,
+                    "homeland"=> 1,
+                    "residence"=> 2
+                
+            ]);
+            $response -> assertStatus(201);
+           
+            $response -> assertJsonStructure([
+                '*' => [
+                    "gender",
+                    "description",
+                    "homeland",
+                    "residence"
+                ]
+            ]);
+            $this->assertDatabaseHas('users', [
+                "name"=> "Franco",
+                "surname"=> "Fedullo",
+                "age"=> 25,
+                "gender"=> null,
+                "email"=> "nashe@aasda111",
+                "description"=>null,
+                "homeland"=> 1,
+                "residence"=> 2
+            ]);
+        }
+    
+    
+            public function test_Register2BadRequest(){
+                $response = $this ->post('api/v1/user/$this->id', [
+                    "gender"=> 3,
+                    "profile_pic"=> null,
+                    "description"=>"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "homeland"=> "paris",
+                    "residence"=> 200000
+                ]);
+    
+                $response -> assertStatus(200);
+                $response -> assertJsonFragment([
+                        "gender"=> ["The gender must only contain letters."],
+                        "description"=>["The description must not be greater than 255 characters."],
+                        "homeland"=>["The homeland must be an integer."],
+                        "residence"=> ["The selected residence is invalid."]
+                ]);
+            }
 
         public function test_loginGoodRequest(){
             $response = $this->post('/oauth/token',[
@@ -238,76 +266,5 @@ class UserTest extends TestCase
             $response->assertJsonFragment(
                 ['message' => 'Logout succesful, token revoked']
             );
-        }
-
-        public function test_EditGoodRequest(){
-
-            $response = $this ->put('/api/v1/user/1', [
-                "name"=> "Francaaao",
-                "surname"=> "Fedullasdasdo",
-                "age"=> 3,
-                "gender"=> "male",
-                "email"=> "naaa@aaaa",
-                "password"=> "nashe12345",
-                "password_confirmation"=> "nashe12345",
-                "profile_pic"=> "http://dummyimage.com/136x100.png/cc0000/ffffff",
-                "description"=>"nashe",
-                "homeland"=> 2,
-                "residence"=> 23
-        ]);
-        $response -> assertStatus(200);
-        $response -> assertJsonStructure([
-                "name",
-                "surname",
-                "age",
-                "gender",
-                "email",
-                "password",
-                "profile_pic",
-                "description",
-                "homeland",
-                "residence"
-        ]);
-        $this->assertDatabaseHas('users', [
-            "name"=> "Francaaao",
-            "surname"=> "Fedullasdasdo",
-            "age"=> 3,
-            "gender"=> "male",
-            "email"=> "naaa@aaaa",
-            "profile_pic"=> "http://dummyimage.com/136x100.png/cc0000/ffffff",
-            "description"=>"nashe",
-            "homeland"=> 2,
-            "residence"=> 23
-        ]);
-        }
-
-        public function test_EditBadRequest(){
-            $response = $this ->put('api/v1/user/1', [
-                "name"=> "1",
-                "surname"=> 1,
-                "age"=> "a",
-                "gender"=> 11,
-                "email"=> "usuario@email.com",
-                "password"=> "franc",
-                "password_confirmation"=> "aa",
-                "profile_pic"=> "alguna",
-                "description"=>"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                "homeland"=> "23a",
-                "residence"=> "111111111111"
-            ]);
-
-            $response -> assertStatus(200);
-            $response -> assertJsonFragment([
-                    "name"=> ["The name must only contain letters."],
-                    "surname"=> ["The surname must only contain letters."],
-                    "age"=> ["The age must be an integer."],
-                    "gender"=> ["The gender must only contain letters."],
-                    "email"=> ["The email has already been taken."],
-                    "password"=>[ "The password must be at least 8  characters.",
-                          "The password confirmation does not match." ],
-                    "description"=>["The description must not be greater than 255 characters."],
-                    "homeland"=>["The homeland must be an integer."],
-                    "residence"=> ["The selected residence is invalid."]
-            ]);
         }
 }

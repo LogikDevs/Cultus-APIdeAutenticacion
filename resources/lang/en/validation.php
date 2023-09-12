@@ -142,8 +142,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'id_followed' => [
+            'unique_follow_relation' => 'This user already follows the other.',
         ],
     ],
 
