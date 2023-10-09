@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\follows;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 class FollowsController extends Controller
 {
     public function FollowValidation(request $request){
@@ -42,7 +44,10 @@ class FollowsController extends Controller
     }
 
 
-    public function ListFollowers($id){
+    public function ListFollowers(){
+        $user = Auth::user();
+        $id = $user->id;
+        dd($id);
         $follows = follows::all()->where("id_followed", $id);
         return $follows;
     }
