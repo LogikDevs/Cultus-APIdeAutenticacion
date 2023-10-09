@@ -47,7 +47,6 @@ class FollowsController extends Controller
     public function ListFollowers(){
         $user = Auth::user();
         $id = $user->id;
-        dd($id);
         $follows = follows::all()->where("id_followed", $id);
         return $follows;
     }
