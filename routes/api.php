@@ -44,7 +44,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::delete("/likes/{d}", [LikesController::class,"delete"]);
 
     Route::get("/followers",[FollowsController::class,"ListFollowers"]);
-    Route::get("/followeds/{d}",[FollowsController::class,"ListFolloweds"]);
+    Route::get("/followeds",[FollowsController::class,"ListFolloweds"]);
     Route::get("/friends/{d}",[FollowsController::class,"ListFriends"]);
     Route::post("/follow",[FollowsController::class,"Follow"]);
     Route::post("/unfollow",[FollowsController::class,"UnFollow"]);

@@ -51,7 +51,9 @@ class FollowsController extends Controller
         return $follows;
     }
 
-    public function ListFolloweds($id){
+    public function ListFolloweds(){
+        $user = Auth::user();
+        $id = $user->id;
         $follows =  follows::all()->where("id_follower", $id);
         return $follows;
     }
