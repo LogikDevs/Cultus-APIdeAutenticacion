@@ -6,7 +6,7 @@ use App\Models\follows;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 class FollowsController extends Controller
 {
     public function FollowValidation(request $request){
@@ -36,7 +36,6 @@ class FollowsController extends Controller
 
     public function FriendValidation(request $request){
         $validation = Validator::make($request->all(),[
-            'id_follower'=>'required | exists:users,id',
             'id_followed'=>'required | exists:users,id',
             'friends' => 'required | boolean'
         ]);
@@ -66,14 +65,21 @@ class FollowsController extends Controller
                             
     }
 
-    public function FindFollow(request $request){
-        $id_followed = $request ->post("id_followed");
-        $id_follower = $request ->post("id_follower");
-        $follow = follows::where("id_follower", $id_follower)
-                                ->where("id_followed", $id_followed)
-                                ->first();
+    public function FindFollow(request $request, int $id){
+    $userId1 = $request ->post("id_followed");
+    $userId2 = $id;
+    $follow1 = follows::where('id_follower', $userId1)
+    ->where('id_followed', $userId2)
+    ->first();
 
-        return $follow;
+    $follow2 = follows::where('id_follower', $userId2)
+    ->where('id_followed', $userId1)
+    ->first();
+    if ($follow1 && $follow2) {
+    self::FriendRequest($follow1, $follow2, true);
+    return true;
+    }
+    return false;
     }
 
     public function Follow(request $request){
@@ -114,26 +120,20 @@ class FollowsController extends Controller
         if ($follow1 and $follow2){
             return true;
         }
-         else { 
             return false;
-         }
-    }
+        }
 
 
     public function MakeFriend(request $request){
+        $user = Auth::user();
+        $id = $user->id;
         $validation = self::FriendValidation($request);
         if ($validation->fails())
         return $validation->errors();
 
-        $follow1 = self::FindFollow($request);
-        $request->merge([
-            "id_follower" => $request->post("id_followed"),
-            "id_followed" => $request->post("id_follower"),
-        ]);
-        $follow2 = self::FindFollow($request);
-
-        if (self::FollowEachOther($follow1, $follow2))
-        return ["response" => "Friends created succesfully."];
+        $follows = self::FindFollow($request, $id);
+        if ($follows)
+        return ["response" => "Friended succesfully."];
 
         return ["response" => "Users not following each other."];
     }
@@ -166,13 +166,10 @@ class FollowsController extends Controller
     }
 
     public function FriendRequest(follows $follow1, follows $follow2, $state){
-        $follow1 -> friends = $state;
-        $follow1 -> save();
-
-        $follow2 -> friends = $state;
-        $follow2 -> save();
-
-      
+        $follow1->friends = $state;
+        $follow2->friends = $state;
+        $follow1->save();
+        $follow2->save();
     }
 
    
