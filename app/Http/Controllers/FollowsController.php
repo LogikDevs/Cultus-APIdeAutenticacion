@@ -58,8 +58,9 @@ class FollowsController extends Controller
         return $follows;
     }
 
-    public function ListFriends($id){
-        follows::where("id_follower", $id)->firstOrFail();
+    public function ListFriends(){
+        $user = Auth::user();
+        $id = $user->id;
         return follows::all()->where("id_follower", $id)
                              ->where("friends", true);
                             
