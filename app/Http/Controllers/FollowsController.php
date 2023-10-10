@@ -88,8 +88,8 @@ class FollowsController extends Controller
     public function FindFollow(request $request, int $id){
         $userId1 = $request ->post("id_followed");
         $userId2 = $id;
-        return $follow = follows::where('id_follower', $userId1)
-            ->where('id_followed', $userId2)
+        return $follow = follows::where('id_follower', $userId2)
+            ->where('id_followed', $userId1)
             ->first();
     }
          
@@ -119,6 +119,7 @@ class FollowsController extends Controller
         return $validation->errors();
         $userId = auth()->id();
         $follow = self::FindFollow($request, $userId);
+        
         if (!$follow) 
             return ["response" => "No follow record found for the given conditions"];
         
@@ -144,7 +145,7 @@ class FollowsController extends Controller
         $state = $request->post("friends");
         $follows = self::FindFollowFriends($request, $id, $state);
         if ($follows)
-        return ["response" => "Change friend status to." . $state . "successfully"];
+        return ["response" => "Change friend status to " . $state . " successfully"];
 
         return ["response" => "Users not following each other."];
     }
