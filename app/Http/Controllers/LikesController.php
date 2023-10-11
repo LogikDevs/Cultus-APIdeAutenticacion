@@ -60,10 +60,11 @@ class LikesController extends Controller
         return $Likes;
     }
 
-    public function delete($id_user, $id_interest)
+    public function Delete($id_interest)
     {
+        $userId = auth()->id();
         $Likes = likes::where("id_interest", $id_interest)
-                        ->where("id_user", $id_user)
+                        ->where("id_user", $userId)
                         ->first();
                                 
         if ($Likes){
