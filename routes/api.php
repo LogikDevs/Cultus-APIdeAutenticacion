@@ -43,10 +43,11 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::post("/likes", [LikesController::class,"Create"]);
     Route::delete("/likes/{d}", [LikesController::class,"delete"]);
 
-    Route::get("/followers",[FollowsController::class,"ListFollowers"]);
-    Route::get("/followeds",[FollowsController::class,"ListFolloweds"]);
-    Route::get("/friends",[FollowsController::class,"ListFriends"]);
+    Route::get("/followers/{d}",[FollowsController::class,"ListFollowers"]);
+    Route::get("/followeds/{d}",[FollowsController::class,"ListFolloweds"]);
+    Route::get("/friends/{d}",[FollowsController::class,"ListFriends"]);
     Route::post("/follow",[FollowsController::class,"Follow"]);
     Route::post("/unfollow",[FollowsController::class,"UnFollow"]);
-    Route::post("/friends",[FollowsController::class,"Friend"]);
+    Route::post("/friends",[FollowsController::class,"MakeFriend"]);
+    Route::post("/friends/unfriend",[FollowsController::class,"UnFriend"]);
 });

@@ -17,7 +17,6 @@ class user extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     protected $table = "users";
-    protected $hidden = ['password'];
     
     public function homeland(): BelongsTo
     {
