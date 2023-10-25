@@ -7,6 +7,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\FollowsController;
+use App\Http\Controllers\GoogleAuthController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -14,6 +15,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function(){
 Route::post("/user", [UserController::class,"Register"]);
+
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 });
 
 
@@ -49,4 +53,5 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::post("/follow",[FollowsController::class,"Follow"]);
     Route::post("/unfollow",[FollowsController::class,"UnFollow"]);
     Route::post("/friends",[FollowsController::class,"Friend"]);
+
 });
