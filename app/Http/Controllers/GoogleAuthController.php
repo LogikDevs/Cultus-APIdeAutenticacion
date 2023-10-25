@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,9 +16,6 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback()
     {
         $user = Socialite::driver('google')->stateless()->user();
-
-        // $user contiene los datos del usuario autenticado con Google
-        // Puedes realizar acciones como crear o autenticar al usuario aquí.
 
         return response()->json(['user' => $user]);
     }
