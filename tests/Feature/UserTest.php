@@ -6,16 +6,27 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 class UserTest extends TestCase
 {
-        private $clientId = 100;
-        private $clientSecret = "wsBa0mp4jwSTYssUGHX5xoqD9IC0X95Gfpg0w3uY";
-
-        private $userName = "usuario@email.com";
-        private $userPassword = "12345678";
-
+    private $BearerToken;
+    
+    public function setUp() :void{
+     parent::setUp();
+     $tokenHeader = [ "Content-Type" => "application/json"];
+     $Bearer = Http::withHeaders($tokenHeader)->post(getenv("API_AUTH_URL") . "/oauth/token",
+      [
+         'username' => getenv("USERNAME"),
+         'password' => getenv("USERPASSWORD"),
+         "grant_type" => "password",
+         'client_id' => getenv("CLIENTID"),
+         'client_secret' => getenv("CLIENTSECRET"),
+     ])->json();
+     $this->BearerToken = $Bearer['access_token'];
+    }
     public function test_ListOneThatExist(){
-        $response = $this->get('/api/v1/user/1');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->BearerToken])->get('/api/v1/user/1');
         
         $response -> assertStatus(200);
         $response->assertJsonStructure([
