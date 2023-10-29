@@ -14,19 +14,27 @@ class UserTest extends TestCase
     
     public function setUp() :void{
      parent::setUp();
+     
+     $this->userName = getenv("USERNAME");
+     $this->userPassword = getenv("USERPASSWORD");
+     $this->clientId = getenv("CLIENTID");
+     $this->clientSecret = getenv("CLIENTSECRET");
+
      $tokenHeader = [ "Content-Type" => "application/json"];
      $Bearer = Http::withHeaders($tokenHeader)->post(getenv("API_AUTH_URL") . "/oauth/token",
       [
-         'username' => getenv("USERNAME"),
-         'password' => getenv("USERPASSWORD"),
+         'username' => $this->userName,
+         'password' => $this->userPassword,
          "grant_type" => "password",
-         'client_id' => getenv("CLIENTID"),
-         'client_secret' => getenv("CLIENTSECRET"),
+         'client_id' => $this->clientId,
+         'client_secret' => $this->clientSecret,
      ])->json();
+     
      $this->BearerToken = $Bearer['access_token'];
+     $this->withHeaders(['Authorization' => 'Bearer ' . $this->BearerToken]);
     }
     public function test_ListOneThatExist(){
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->BearerToken])->get('/api/v1/user/1');
+        $response = $this->get('/api/v1/user/1');
         
         $response -> assertStatus(200);
         $response->assertJsonStructure([
@@ -85,7 +93,6 @@ class UserTest extends TestCase
                 "surname",
                 "age",
                 "email",
-                "password",
         ]);
         $this->assertDatabaseHas('users', [
             "name"=> "Franco",
@@ -113,7 +120,7 @@ class UserTest extends TestCase
             $response -> assertJsonFragment([
                     "name"=> ["The name must only contain letters."],
                     "surname"=> ["The surname must only contain letters."],
-                    "age"=> ["The age must be an integer."],
+                    "age"=> ["The age must be an integer.","The age must be greater than or equal to 18."],
                     "email"=> ["The email must be a valid email address."],
                     "password"=>[ "The password must be at least 8  characters.",
                           "The password confirmation does not match." ],
