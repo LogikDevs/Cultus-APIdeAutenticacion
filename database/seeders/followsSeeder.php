@@ -21,15 +21,23 @@ class followsSeeder extends Seeder
         ->count(1)
         ->create([
             "id_follower" => 2,
-            "id_followed" => 1,
+            "id_followed" => 11,
             "friends" => true
         ]);
 
         \App\Models\follows::factory(1)
         ->count(1)
         ->create([
-            "id_follower" => 1,
+            "id_follower" => 11,
             "id_followed" => 2,
+            "friends" => true
+        ]);
+
+        \App\Models\follows::factory(1)
+        ->count(1)
+        ->create([
+            "id_follower" => 11,
+            "id_followed" => 22,
             "friends" => true
         ]);
     }
