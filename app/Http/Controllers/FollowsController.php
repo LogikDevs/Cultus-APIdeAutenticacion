@@ -144,6 +144,9 @@ class FollowsController extends Controller
         return $validation->errors();
         $state = $request->post("friends");
         $follows = self::FindFollowFriends($request, $id, $state);
+        if (!$state){
+        $state = "false";
+        }
         if ($follows)
         return ["response" => "Change friend status to " . $state . " successfully"];
 
