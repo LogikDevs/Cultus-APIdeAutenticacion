@@ -30,7 +30,11 @@ class LikesController extends Controller
     }
 
     public function ListInterestUsers($id){
-        return likes::all()->where("id_interest",$id);
+        $users = likes::all()->where("id_interest",$id);
+        if (!$users->isEmpty()){
+            return response($users, 200);
+        }
+        return response($users, 404);
     }
 
     public function Create(request $request){

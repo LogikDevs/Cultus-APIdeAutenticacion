@@ -5,9 +5,31 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 class LikesTest extends TestCase
 {
+    public function setUp() :void{
+        parent::setUp();
+   
+        $this->userName = getenv("USERNAME");
+        $this->userPassword = getenv("USERPASSWORD");
+        $this->clientId = getenv("CLIENTID");
+        $this->clientSecret = getenv("CLIENTSECRET");
+   
+        $tokenHeader = [ "Content-Type" => "application/json"];
+        $Bearer = Http::withHeaders($tokenHeader)->post(getenv("API_AUTH_URL") . "/oauth/token",
+         [
+            'username' => $this->userName,
+            'password' => $this->userPassword,
+            "grant_type" => "password",
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+        ])->json();
+   
+        $this->BearerToken = $Bearer['access_token'];
+        $this->withHeaders(['Authorization' => 'Bearer ' . $this->BearerToken]);
+       }
    
     public function test_ListUserInterestGoodRequest(){
         $response = $this->get('api/v1/likes/user/1');
@@ -45,15 +67,14 @@ class LikesTest extends TestCase
     }
 
     public function test_ListInterestUserBadRequest(){
-        $response = $this->get('api/v1/likes/interest/');
+        $response = $this->get('api/v1/likes/interest/11111111111');
         $response -> assertStatus(404);
     }
 
 
     public function test_CreateGoodRequest(){
         $response = $this->post('api/v1/likes/', [
-            "id_interest"=>1,
-            "id_user"=>2
+            "id_interest"=>10,
         ]);
 
         $response -> assertStatus(201);
@@ -65,30 +86,28 @@ class LikesTest extends TestCase
                 "id"
         ]);
         $this->assertDatabaseHas('likes',[
-            "id_interest"=> 1,
-            "id_user"=>2
+            "id_interest"=> 10,
+            "id_user"=>11
         ]);
     }
 
     public function test_CreateBadRequest(){
         $response = $this->post('api/v1/likes/', [
             "id_interest"=>"aa",
-            "id_user"=>"bb"
         ]);
         $response -> assertStatus(200);
         $response -> assertJsonFragment([
             "id_interest"=>["The selected id interest is invalid."],
-            "id_user"=>["The selected id user is invalid."]
         ]);
     }
 
     public function test_DeleteGoodRequest(){
-        $response = $this->delete('api/v1/likes/2/1' );
+        $response = $this->delete('api/v1/likes/10' );
         $response -> assertStatus(200);
         $response -> assertJsonFragment(["response"=> "Object Deleted"]);
         $this->assertDatabaseMissing("likes",[
-            "id_interest"=>1,
-            "id_user"=>2,
+            "id_interest"=>10,
+            "id_user"=>11,
             "deleted_at"=> null
         ]);
     }
