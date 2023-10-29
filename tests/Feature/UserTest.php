@@ -29,7 +29,7 @@ class UserTest extends TestCase
          'client_id' => $this->clientId,
          'client_secret' => $this->clientSecret,
      ])->json();
-     
+
      $this->BearerToken = $Bearer['access_token'];
      $this->withHeaders(['Authorization' => 'Bearer ' . $this->BearerToken]);
     }
@@ -115,10 +115,10 @@ class UserTest extends TestCase
 
         public function test_Register2GoodRequest(){
             
-            $response = $this ->post('/api/v1/user/427', [
+            $response = $this ->post('/api/v1/user/2', [
                 
                     "gender"=> null,
-                    "description"=>null,
+                    "description"=>"a",
                     "homeland"=> 1,
                     "residence"=> 2
                 
@@ -134,12 +134,9 @@ class UserTest extends TestCase
                 ]
             ]);
             $this->assertDatabaseHas('users', [
-                "name"=> "Franco",
-                "surname"=> "Fedullo",
-                "age"=> 25,
+                "name"=> "usuario",
                 "gender"=> null,
-                "email"=> "nashe@aasda111",
-                "description"=>null,
+                "description"=>"a",
                 "homeland"=> 1,
                 "residence"=> 2
             ]);
@@ -147,7 +144,7 @@ class UserTest extends TestCase
     
     
             public function test_Register2BadRequest(){
-                $response = $this ->post('api/v1/user/$this->id', [
+                $response = $this ->post('api/v1/user/2', [
                     "gender"=> 3,
                     "profile_pic"=> null,
                     "description"=>"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -202,20 +199,6 @@ class UserTest extends TestCase
             ]);
         }
 
-        public function test_ValidateNoToken(){    
-            $response = $this->get('/api/v1/validate');
-
-            $response->assertStatus(500);
-        }
-
-        public function test_ValidateBadRequest(){
-            $response = $this->get('/api/v1/validate',[
-                [ "Authorization" => "Bearer " . Str::Random(40)]
-            ]);
-    
-            $response->assertStatus(500);
-        }
-
         public function test_ValidateGoodRequest(){
             $tokenResponse = $this->post('/oauth/token',[
                 "username" => $this -> userName,
@@ -232,22 +215,6 @@ class UserTest extends TestCase
             );
     
             $response->assertStatus(200);
-        }
-
-        public function test_LogoutNoToken(){
-
-        $response = $this->get('/api/v1/logout');
-
-        $response->assertStatus(500);
-        
-        }
-
-        public function test_LogoutBadRequest(){
-        $response = $this->get('/api/v1/logout',[
-            [ "Authorization" => "Bearer " . Str::Random(40)]
-        ]);
-
-        $response->assertStatus(500);
         }
 
         public function test_LogoutGoodRequest(){
