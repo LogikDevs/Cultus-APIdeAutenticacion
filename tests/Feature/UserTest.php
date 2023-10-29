@@ -14,7 +14,7 @@ class UserTest extends TestCase
     
     public function setUp() :void{
      parent::setUp();
-     
+
      $this->userName = getenv("USERNAME");
      $this->userPassword = getenv("USERPASSWORD");
      $this->clientId = getenv("CLIENTID");
@@ -63,20 +63,6 @@ class UserTest extends TestCase
         $response -> assertStatus(404);
     }
 
-    public function test_DeleteExisting(){
-        $response = $this->delete('api/v1/user/2' );
-        $response -> assertStatus(200);
-        $response -> assertJsonFragment(["response"=> "Object with ID 2 Deleted"]);
-        $this->assertDatabaseMissing("users",[
-            "id"=>"2",
-            "deleted_at"=> null
-        ]);
-    }
-
-    public function test_DeleteNotExisting(){
-        $response = $this->delete('api/v1/user/1000');
-        $response -> assertStatus(404);
-    }
 
     public function test_RegisterGoodRequest(){
         $response = $this ->post('/api/v1/user', [
@@ -284,5 +270,15 @@ class UserTest extends TestCase
             $response->assertJsonFragment(
                 ['message' => 'Logout succesful, token revoked']
             );
+        }
+    
+        public function test_DeleteExisting(){
+            $response = $this->delete('api/v1/user');
+            $response -> assertStatus(200);
+            $response -> assertJsonFragment(["response"=> "Object with ID 11 Deleted"]);
+            $this->assertDatabaseMissing("users",[
+                "id"=>"11",
+                "deleted_at"=> null
+            ]);
         }
 }
