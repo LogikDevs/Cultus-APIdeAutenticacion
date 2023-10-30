@@ -29,7 +29,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::get("/user/{d}/",[UserController::class,"ListOne"]);
     Route::get("/user/post/{d}/",[UserController::class,"ListOnePost"]);
     Route::get("/user/profile/{d}/",[UserController::class,"ListOneProfile"]);
-    Route::put("/user",[UserController::class,"edit"]);
+    Route::post("/user/edit",[UserController::class,"edit"]);
     Route::post("/user/2", [UserController::class,"Register2"]);
     Route::delete("/user",[UserController::class,"delete"]);
  
