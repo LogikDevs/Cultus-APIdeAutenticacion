@@ -61,7 +61,7 @@ class UserController extends Controller
             'age' => 'required | integer',
             'gender' => 'nullable | alpha',
             'email' => ['required', 'email',  Rule::unique('users')->ignore($id)],
-            'password' =>'required | min:8 | confirmed',
+            'password' =>'nullable | min:8 | confirmed',
              'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
