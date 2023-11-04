@@ -30,7 +30,11 @@ class LikesController extends Controller
     }
 
     public function ListInterestUsers($id){
-        return likes::all()->where("id_interest",$id);
+        $users = likes::all()->where("id_interest",$id);
+        if (!$users->isEmpty()){
+            return response($users, 200);
+        }
+        return response($users, 404);
     }
 
     public function Create(request $request){
@@ -60,10 +64,11 @@ class LikesController extends Controller
         return $Likes;
     }
 
-    public function delete($id_user, $id_interest)
+    public function Delete($id_interest)
     {
+        $userId = auth()->id();
         $Likes = likes::where("id_interest", $id_interest)
-                        ->where("id_user", $id_user)
+                        ->where("id_user", $userId)
                         ->first();
                                 
         if ($Likes){
