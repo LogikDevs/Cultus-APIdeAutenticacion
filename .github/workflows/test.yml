@@ -38,4 +38,4 @@ jobs:
           php artisan passport:install
           php artisan key:generate
       - name: Ejecutar pruebas
-        run: php artisan serve ; sleep 2 ; php artisan test
+        run: php artisan serve &; sleep 1 &; php artisan test
