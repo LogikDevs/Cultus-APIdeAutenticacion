@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string("password");
             $table->string("profile_pic")->nullable();
             $table->string("description")->nullable();
-
+            $table->dateTime("suspended")->nullable();
             $table->unsignedBigInteger("homeland")->nullable();
             $table->unsignedBigInteger("residence")->nullable();
             $table->foreign("homeland")->references("id_country")->on("country");

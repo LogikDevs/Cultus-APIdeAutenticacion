@@ -7,6 +7,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\FollowsController;
+use App\Http\Controllers\GoogleAuthController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -14,6 +15,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function(){
 Route::post("/user", [UserController::class,"Register"]);
+
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 });
 
 
@@ -25,7 +29,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::get("/user/{d}/",[UserController::class,"ListOne"]);
     Route::get("/user/post/{d}/",[UserController::class,"ListOnePost"]);
     Route::get("/user/profile/{d}/",[UserController::class,"ListOneProfile"]);
-    Route::put("/user",[UserController::class,"edit"]);
+    Route::post("/user/edit",[UserController::class,"edit"]);
     Route::post("/user/2", [UserController::class,"Register2"]);
     Route::delete("/user",[UserController::class,"delete"]);
  
@@ -41,13 +45,13 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::get("/likes/user/",[LikesController::class,"ListUserInterest"]);
     Route::get("/likes/interest/{d}/",[LikesController::class,"ListInterestUsers"]);
     Route::post("/likes", [LikesController::class,"Create"]);
-    Route::delete("/likes/{d}", [LikesController::class,"delete"]);
+    Route::delete("/likes/{d}", [LikesController::class,"Delete"]);
 
-    Route::get("/followers/{d}",[FollowsController::class,"ListFollowers"]);
-    Route::get("/followeds/{d}",[FollowsController::class,"ListFolloweds"]);
-    Route::get("/friends/{d}",[FollowsController::class,"ListFriends"]);
+    Route::get("/followers",[FollowsController::class,"ListFollowers"]);
+    Route::get("/followeds",[FollowsController::class,"ListFolloweds"]);
+    Route::get("/friends",[FollowsController::class,"ListFriends"]);
     Route::post("/follow",[FollowsController::class,"Follow"]);
     Route::post("/unfollow",[FollowsController::class,"UnFollow"]);
-    Route::post("/friends",[FollowsController::class,"MakeFriend"]);
-    Route::post("/friends/unfriend",[FollowsController::class,"UnFriend"]);
+    Route::post("/friends",[FollowsController::class,"Friend"]);
+
 });

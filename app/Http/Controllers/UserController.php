@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
@@ -60,7 +61,7 @@ class UserController extends Controller
             'age' => 'required | integer',
             'gender' => 'nullable | alpha',
             'email' => ['required', 'email',  Rule::unique('users')->ignore($id)],
-            'password' =>'required | min:8 | confirmed',
+            'password' =>'nullable | min:8 | confirmed',
              'profile_pic' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'description' => 'nullable | max:255',
             'homeland' => ' nullable | integer | exists:country,id_country',
@@ -72,7 +73,7 @@ class UserController extends Controller
         $validation = Validator::make($request->all(),[
             'name' => 'required | alpha:ascii ',
             'surname' => 'required | alpha:ascii',
-            'age' => 'required | integer',
+            'age' => 'required | integer | gte:18',
             'email' => 'email | required | unique:users',
             'password' =>'required | min:8 | confirmed',
         ]);
