@@ -183,4 +183,28 @@ class UserController extends Controller
         return ["response" => "Object with ID $User->id Deleted"];
         
     }
+
+    public function SearchUser(request $request){
+        $validation = self::SearchUserValidation($request);
+
+        if ($validation->fails())
+        return $validation->errors();
+
+        return response ($this->SearchUserRequest($request));
+    }
+
+    public function SearchUserValidation(request $request){
+        $validation = Validator::make($request->all(),[
+            'name' => 'nullable | alpha:ascii ',
+            'surname' => 'nullable | alpha:ascii',
+        ]);
+        return $validation;   
+    }
+
+    public function SearchUserRequest(request $request){
+        $name = $request -> post("name");
+        $surname = $request -> post("surname");
+        $Users = user::where('name', 'like', "%$name%")->where('surname', 'like', "%$surname%")->get();
+        return $Users;
+    }
 }
