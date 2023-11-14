@@ -33,6 +33,7 @@ Route::prefix('v1')->middleware('auth:api')->group(function(){
     Route::post("/user/2", [UserController::class,"Register2"]);
     Route::delete("/user",[UserController::class,"delete"]);
  
+    Route::post("/user/search",[UserController::class,"SearchUser"]);
 
     Route::get("/country", [CountryController::class,"List"]);
     Route::get("/country/{d}/",[CountryController::class,"ListOne"]);
